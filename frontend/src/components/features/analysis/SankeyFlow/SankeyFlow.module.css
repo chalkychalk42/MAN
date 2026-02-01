@@ -1,0 +1,66 @@
+.container {
+  width: 100%;
+  min-height: 400px;
+  background: var(--color-bg-secondary);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--glass-border);
+  padding: var(--space-4);
+  overflow: hidden;
+}
+
+.svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  color: var(--color-text-muted);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-sm);
+}
+
+.node rect {
+  cursor: pointer;
+  rx: 3;
+  transition: filter 0.15s ease;
+}
+
+.node rect:hover {
+  filter: brightness(1.4) drop-shadow(0 0 8px currentColor);
+}
+
+.node text {
+  font-family: var(--font-family-mono);
+  font-size: 11px;
+  fill: var(--color-text-secondary);
+  pointer-events: none;
+}
+
+.link path {
+  fill: none;
+  transition: stroke-opacity 0.15s ease;
+}
+
+.link path:hover {
+  stroke-opacity: 0.6;
+}
+
+.tooltip {
+  position: absolute;
+  padding: var(--space-2) var(--space-3);
+  background: var(--color-bg-elevated, #1e1e32);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-primary);
+  pointer-events: none;
+  z-index: 100;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}

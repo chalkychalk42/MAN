@@ -1,0 +1,26 @@
+/* ==========================================================================
+   Card Component Styles
+   ========================================================================== */
+
+.card {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: var(--border-thin);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  transition:
+    border-color var(--transition-base),
+    box-shadow var(--transition-base);
+}
+
+/* --------------------------------------------------------------------------
+   Hover Effect
+   -------------------------------------------------------------------------- */
+
+.hoverable:hover {
+  border-color: rgba(136, 136, 168, 0.22);
+  box-shadow:
+    0 0 5px rgba(0, 240, 255, 0.06),
+    0 0 15px rgba(0, 240, 255, 0.03);
+}

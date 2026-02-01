@@ -1,0 +1,249 @@
+/* ==========================================================================
+   HeroSection
+   Full viewport hero with radial gradient, grid pattern, and neon accents
+   ========================================================================== */
+
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: var(--space-16) var(--space-6) var(--space-20);
+}
+
+/* --------------------------------------------------------------------------
+   Background: Dot / Grid Pattern
+   -------------------------------------------------------------------------- */
+.gridPattern {
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle, rgba(136, 136, 168, 0.08) 1px, transparent 1px);
+  background-size: 32px 32px;
+  pointer-events: none;
+}
+
+/* --------------------------------------------------------------------------
+   Background: Radial Gradient Overlay
+   -------------------------------------------------------------------------- */
+.radialOverlay {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(
+      ellipse 70% 50% at 50% 40%,
+      rgba(0, 240, 255, 0.06) 0%,
+      transparent 60%
+    ),
+    radial-gradient(
+      ellipse 50% 40% at 30% 70%,
+      rgba(168, 85, 247, 0.04) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      ellipse 40% 35% at 70% 80%,
+      rgba(0, 255, 136, 0.03) 0%,
+      transparent 45%
+    );
+  pointer-events: none;
+}
+
+/* --------------------------------------------------------------------------
+   Content
+   -------------------------------------------------------------------------- */
+.content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 800px;
+  width: 100%;
+}
+
+/* --------------------------------------------------------------------------
+   Heading
+   -------------------------------------------------------------------------- */
+.heading {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin: 0 0 var(--space-6);
+}
+
+.headingLine {
+  font-size: var(--font-size-hero);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
+  color: var(--color-text-primary);
+  letter-spacing: -0.02em;
+}
+
+.highlight {
+  color: var(--color-cyan);
+  text-shadow: var(--text-glow-cyan);
+}
+
+/* --------------------------------------------------------------------------
+   Subheading
+   -------------------------------------------------------------------------- */
+.subheading {
+  font-size: var(--font-size-lg);
+  line-height: var(--line-height-relaxed);
+  color: var(--color-text-secondary);
+  max-width: 640px;
+  margin: 0 0 var(--space-10);
+}
+
+/* --------------------------------------------------------------------------
+   Demo Form / Input
+   -------------------------------------------------------------------------- */
+.demoForm {
+  width: 100%;
+  max-width: 600px;
+  margin-bottom: var(--space-4);
+}
+
+.inputGroup {
+  display: flex;
+  gap: var(--space-2);
+  padding: var(--space-1);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-xl);
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.inputGroup:focus-within {
+  border-color: rgba(0, 240, 255, 0.25);
+  box-shadow:
+    0 0 0 3px rgba(0, 240, 255, 0.06),
+    var(--glow-cyan);
+}
+
+.inputWrapper {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex: 1;
+  padding: var(--space-2) var(--space-4);
+}
+
+.inputIcon {
+  color: var(--color-text-muted);
+  flex-shrink: 0;
+}
+
+.input {
+  flex: 1;
+  background: none;
+  border: none;
+  outline: none;
+  color: var(--color-text-primary);
+  font-size: var(--font-size-base);
+  font-family: var(--font-family-mono);
+  min-width: 0;
+}
+
+.input::placeholder {
+  color: var(--color-text-muted);
+}
+
+/* --------------------------------------------------------------------------
+   Deploy Button
+   -------------------------------------------------------------------------- */
+.deployButton {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-3) var(--space-6);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-inverse);
+  background: var(--color-cyan);
+  border: none;
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  transition:
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.deployButton:hover {
+  transform: translateY(-1px);
+  box-shadow:
+    0 4px 20px rgba(0, 240, 255, 0.3),
+    0 0 40px rgba(0, 240, 255, 0.15);
+}
+
+.deployButton:active {
+  transform: translateY(0);
+}
+
+.deployButtonGlow {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.2) 0%,
+    transparent 50%
+  );
+  pointer-events: none;
+}
+
+.deployButtonText {
+  position: relative;
+  z-index: 1;
+}
+
+/* --------------------------------------------------------------------------
+   Hint
+   -------------------------------------------------------------------------- */
+.hint {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+/* --------------------------------------------------------------------------
+   Responsive
+   -------------------------------------------------------------------------- */
+@media (max-width: 768px) {
+  .hero {
+    padding: var(--space-12) var(--space-4) var(--space-16);
+    min-height: calc(100vh - var(--header-height));
+  }
+
+  .headingLine {
+    font-size: var(--font-size-3xl);
+  }
+
+  .subheading {
+    font-size: var(--font-size-base);
+  }
+
+  .inputGroup {
+    flex-direction: column;
+    border-radius: var(--radius-lg);
+  }
+
+  .deployButton {
+    justify-content: center;
+    border-radius: var(--radius-md);
+  }
+}
+
+@media (max-width: 480px) {
+  .headingLine {
+    font-size: var(--font-size-2xl);
+  }
+}

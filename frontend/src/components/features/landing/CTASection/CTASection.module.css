@@ -1,0 +1,202 @@
+/* ==========================================================================
+   CTASection
+   Full width call-to-action with gradient background
+   ========================================================================== */
+
+.section {
+  position: relative;
+  padding: var(--space-24) var(--space-6);
+  overflow: hidden;
+}
+
+/* --------------------------------------------------------------------------
+   Gradient Background
+   -------------------------------------------------------------------------- */
+.gradientBg {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      180deg,
+      var(--color-bg-primary) 0%,
+      rgba(26, 26, 46, 0.6) 40%,
+      rgba(168, 85, 247, 0.08) 70%,
+      var(--color-bg-primary) 100%
+    );
+  pointer-events: none;
+}
+
+/* Decorative radial highlights */
+.gradientBg::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 800px;
+  height: 400px;
+  background:
+    radial-gradient(
+      ellipse at center,
+      rgba(168, 85, 247, 0.06) 0%,
+      rgba(0, 240, 255, 0.03) 40%,
+      transparent 70%
+    );
+  pointer-events: none;
+}
+
+/* --------------------------------------------------------------------------
+   Content
+   -------------------------------------------------------------------------- */
+.content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+/* --------------------------------------------------------------------------
+   Heading
+   -------------------------------------------------------------------------- */
+.heading {
+  font-size: var(--font-size-4xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  margin: 0 0 var(--space-5);
+  line-height: var(--line-height-tight);
+  letter-spacing: -0.02em;
+}
+
+/* --------------------------------------------------------------------------
+   Subtext
+   -------------------------------------------------------------------------- */
+.subtext {
+  font-size: var(--font-size-lg);
+  line-height: var(--line-height-relaxed);
+  color: var(--color-text-secondary);
+  margin: 0 0 var(--space-10);
+  max-width: 560px;
+}
+
+/* --------------------------------------------------------------------------
+   Action Buttons
+   -------------------------------------------------------------------------- */
+.actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* Primary button */
+.primaryButton {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-3) var(--space-8);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-inverse);
+  background: var(--color-cyan);
+  border: none;
+  border-radius: var(--radius-lg);
+  text-decoration: none;
+  cursor: pointer;
+  overflow: hidden;
+  transition:
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.primaryButton:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 4px 20px rgba(0, 240, 255, 0.3),
+    0 0 60px rgba(0, 240, 255, 0.12);
+  color: var(--color-text-inverse);
+  text-shadow: none;
+}
+
+.primaryButton:active {
+  transform: translateY(0);
+}
+
+.buttonGlow {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.2) 0%,
+    transparent 50%
+  );
+  pointer-events: none;
+}
+
+.buttonText {
+  position: relative;
+  z-index: 1;
+}
+
+/* Secondary button */
+.secondaryButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-3) var(--space-8);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+  background: transparent;
+  border: 1px solid rgba(136, 136, 168, 0.2);
+  border-radius: var(--radius-lg);
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    border-color var(--transition-fast),
+    background var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.secondaryButton:hover {
+  border-color: rgba(136, 136, 168, 0.35);
+  background: rgba(255, 255, 255, 0.03);
+  box-shadow: var(--shadow-md);
+  color: var(--color-text-primary);
+  text-shadow: none;
+}
+
+/* --------------------------------------------------------------------------
+   Responsive
+   -------------------------------------------------------------------------- */
+@media (max-width: 768px) {
+  .section {
+    padding: var(--space-16) var(--space-4);
+  }
+
+  .heading {
+    font-size: var(--font-size-2xl);
+  }
+
+  .subtext {
+    font-size: var(--font-size-base);
+  }
+}
+
+@media (max-width: 480px) {
+  .actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .primaryButton,
+  .secondaryButton {
+    width: 100%;
+    justify-content: center;
+  }
+}

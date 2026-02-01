@@ -1,0 +1,104 @@
+/* ==========================================================================
+   MAN Custom Scrollbars
+   Dark, minimal scrollbars with neon accent theming
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Webkit Scrollbars (Chrome, Edge, Safari, Opera)
+   -------------------------------------------------------------------------- */
+
+/* Global scrollbar dimensions */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+/* Track - the channel behind the thumb */
+::-webkit-scrollbar-track {
+  background: var(--color-bg-primary, #0a0a0f);
+  border-radius: 3px;
+}
+
+/* Thumb - the draggable handle */
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 240, 255, 0.15);
+  border-radius: 3px;
+  transition: background 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 240, 255, 0.3);
+}
+
+::-webkit-scrollbar-thumb:active {
+  background: rgba(0, 240, 255, 0.4);
+}
+
+/* Corner piece where horizontal and vertical scrollbars meet */
+::-webkit-scrollbar-corner {
+  background: var(--color-bg-primary, #0a0a0f);
+}
+
+/* --------------------------------------------------------------------------
+   Firefox Scrollbars
+   Uses the scrollbar-width and scrollbar-color standard properties.
+   -------------------------------------------------------------------------- */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 240, 255, 0.15) var(--color-bg-primary, #0a0a0f);
+}
+
+/* --------------------------------------------------------------------------
+   Variant: Hidden Scrollbar (still scrollable)
+   Apply .scrollbar-hidden to hide scrollbars while keeping scroll functionality.
+   -------------------------------------------------------------------------- */
+.scrollbar-hidden {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.scrollbar-hidden::-webkit-scrollbar {
+  display: none;
+}
+
+/* --------------------------------------------------------------------------
+   Variant: Wider scrollbar for main content areas
+   Apply .scrollbar-wide for an 8px scrollbar on primary content panels.
+   -------------------------------------------------------------------------- */
+.scrollbar-wide::-webkit-scrollbar {
+  width: 8px;
+}
+
+.scrollbar-wide {
+  scrollbar-width: auto;
+}
+
+/* --------------------------------------------------------------------------
+   Variant: Green-tinted scrollbar for code/terminal areas
+   -------------------------------------------------------------------------- */
+.scrollbar-green::-webkit-scrollbar-thumb {
+  background: rgba(0, 255, 136, 0.15);
+}
+
+.scrollbar-green::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 255, 136, 0.3);
+}
+
+.scrollbar-green {
+  scrollbar-color: rgba(0, 255, 136, 0.15) var(--color-bg-primary, #0a0a0f);
+}
+
+/* --------------------------------------------------------------------------
+   Variant: Purple-tinted scrollbar
+   -------------------------------------------------------------------------- */
+.scrollbar-purple::-webkit-scrollbar-thumb {
+  background: rgba(168, 85, 247, 0.15);
+}
+
+.scrollbar-purple::-webkit-scrollbar-thumb:hover {
+  background: rgba(168, 85, 247, 0.3);
+}
+
+.scrollbar-purple {
+  scrollbar-color: rgba(168, 85, 247, 0.15) var(--color-bg-primary, #0a0a0f);
+}

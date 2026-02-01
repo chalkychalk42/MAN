@@ -1,0 +1,175 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "AnalysisResult",
+  "description": "JSON Schema for a complete MAN token analysis result",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique analysis identifier"
+    },
+    "contractAddress": {
+      "type": "string",
+      "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$",
+      "description": "Solana token contract address (base58)"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["pending", "running", "completed", "failed"]
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "completedAt": {
+      "type": ["string", "null"],
+      "format": "date-time"
+    },
+    "duration": {
+      "type": ["number", "null"],
+      "description": "Total analysis duration in milliseconds"
+    },
+    "token": {
+      "type": "object",
+      "description": "Token metadata retrieved by the Scout agent",
+      "properties": {
+        "name": { "type": "string" },
+        "symbol": { "type": "string" },
+        "decimals": { "type": "integer" },
+        "supply": { "type": "string" },
+        "mintAuthority": { "type": ["string", "null"] },
+        "freezeAuthority": { "type": ["string", "null"] },
+        "imageUrl": { "type": ["string", "null"] },
+        "description": { "type": ["string", "null"] },
+        "createdAt": { "type": ["string", "null"], "format": "date-time" }
+      },
+      "required": ["name", "symbol", "decimals", "supply"]
+    },
+    "holders": {
+      "type": "array",
+      "description": "Top token holders with balances",
+      "items": {
+        "type": "object",
+        "properties": {
+          "address": { "type": "string" },
+          "balance": { "type": "string" },
+          "percentage": { "type": "number" },
+          "isInsider": { "type": "boolean" }
+        },
+        "required": ["address", "balance", "percentage"]
+      }
+    },
+    "moneyFlow": {
+      "type": "object",
+      "description": "Sankey diagram data produced by the Tracker agent",
+      "properties": {
+        "nodes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string" },
+              "label": { "type": "string" },
+              "type": {
+                "type": "string",
+                "enum": ["wallet", "dex", "cex", "contract", "unknown"]
+              }
+            },
+            "required": ["id", "label"]
+          }
+        },
+        "links": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "source": { "type": "string" },
+              "target": { "type": "string" },
+              "value": { "type": "number" },
+              "token": { "type": "string" }
+            },
+            "required": ["source", "target", "value"]
+          }
+        }
+      },
+      "required": ["nodes", "links"]
+    },
+    "walletScores": {
+      "type": "array",
+      "description": "Scored wallets produced by the Analyst agent",
+      "items": {
+        "$ref": "wallet-score.json"
+      }
+    },
+    "connections": {
+      "type": "array",
+      "description": "Wallet connection clusters discovered by the Sleuth agent",
+      "items": {
+        "type": "object",
+        "properties": {
+          "clusterId": { "type": "string" },
+          "wallets": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "confidence": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "evidence": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": ["shared_funding", "timing_correlation", "same_dex_pattern", "token_overlap"]
+                },
+                "description": { "type": "string" },
+                "strength": { "type": "number", "minimum": 0, "maximum": 1 }
+              },
+              "required": ["type", "description", "strength"]
+            }
+          }
+        },
+        "required": ["clusterId", "wallets", "confidence"]
+      }
+    },
+    "riskAssessment": {
+      "type": "object",
+      "description": "Risk analysis produced by the Sentinel agent",
+      "properties": {
+        "overallScore": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "level": {
+          "type": "string",
+          "enum": ["Low Risk", "Medium Risk", "High Risk"]
+        },
+        "factors": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string" },
+              "score": { "type": "number", "minimum": 0, "maximum": 100 },
+              "weight": { "type": "number" },
+              "description": { "type": "string" }
+            },
+            "required": ["name", "score", "weight"]
+          }
+        },
+        "aiInsight": {
+          "type": "string",
+          "description": "AI-generated natural language risk summary"
+        }
+      },
+      "required": ["overallScore", "level", "factors"]
+    }
+  },
+  "required": ["id", "contractAddress", "status", "createdAt"]
+}

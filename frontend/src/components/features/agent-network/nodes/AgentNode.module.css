@@ -1,0 +1,271 @@
+.node {
+  width: 150px;
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  border: 2px solid var(--agent-color);
+  text-align: center;
+  transition: all var(--transition-base);
+  position: relative;
+  overflow: hidden;
+  cursor: grab;
+}
+
+.node:hover {
+  transform: scale(1.05);
+  z-index: 10;
+}
+
+/* ---- Icon ---- */
+
+.icon {
+  width: 44px;
+  height: 44px;
+  margin: 0 auto var(--space-2);
+  border-radius: var(--radius-full);
+  background: color-mix(in srgb, var(--agent-color) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--agent-color) 30%, transparent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-base);
+}
+
+.icon svg {
+  width: 20px;
+  height: 20px;
+  stroke: var(--agent-color);
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: stroke var(--transition-base);
+}
+
+/* ---- Text ---- */
+
+.name {
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  color: var(--agent-color);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  transition: color var(--transition-base);
+}
+
+.status {
+  font-family: var(--font-family-mono);
+  font-size: 10px;
+  color: var(--color-text-secondary);
+  margin-top: var(--space-1);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-height: 14px;
+}
+
+/* ---- Progress ---- */
+
+.progressTrack {
+  width: 100%;
+  height: 2px;
+  margin-top: var(--space-2);
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: var(--agent-color);
+  border-radius: var(--radius-full);
+  transition: width var(--transition-slow);
+  box-shadow: 0 0 6px var(--agent-color);
+}
+
+/* ---- State: idle ---- */
+
+.idle {
+  opacity: 0.5;
+  border-style: dashed;
+}
+
+.idle:hover {
+  opacity: 0.7;
+}
+
+/* ---- State: initializing ---- */
+
+.initializing {
+  opacity: 0.8;
+  border-style: solid;
+  animation: init-fade 1.2s ease-in-out infinite alternate;
+}
+
+@keyframes init-fade {
+  0% {
+    opacity: 0.6;
+  }
+  100% {
+    opacity: 0.9;
+  }
+}
+
+/* ---- State: working ---- */
+
+.working {
+  opacity: 1;
+  border-style: solid;
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 8px color-mix(in srgb, var(--agent-color) 30%, transparent);
+  }
+  50% {
+    box-shadow: 0 0 20px
+        color-mix(in srgb, var(--agent-color) 50%, transparent),
+      0 0 40px color-mix(in srgb, var(--agent-color) 20%, transparent);
+  }
+}
+
+.scanLine {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    color-mix(in srgb, var(--agent-color) 8%, transparent) 50%,
+    transparent 100%
+  );
+  animation: scan-line 2s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes scan-line {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(100%);
+  }
+}
+
+/* ---- State: complete ---- */
+
+.complete {
+  opacity: 1;
+  border-color: var(--color-success);
+  border-style: solid;
+}
+
+.complete .icon {
+  background: color-mix(in srgb, var(--color-success) 15%, transparent);
+  border-color: color-mix(in srgb, var(--color-success) 30%, transparent);
+}
+
+.complete .icon svg {
+  stroke: var(--color-success);
+}
+
+.complete .name {
+  color: var(--color-success);
+}
+
+.completeCheck {
+  position: absolute;
+  top: var(--space-2);
+  right: var(--space-2);
+  width: 18px;
+  height: 18px;
+  border-radius: var(--radius-full);
+  background: var(--color-success);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: check-pop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes check-pop {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.completeCheck svg {
+  width: 10px;
+  height: 10px;
+  stroke: var(--color-bg-primary);
+  fill: none;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* ---- State: error ---- */
+
+.error {
+  opacity: 1;
+  border-color: var(--color-danger);
+  border-style: solid;
+  animation: error-shake 0.5s ease-in-out;
+}
+
+@keyframes error-shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20%,
+  60% {
+    transform: translateX(-4px);
+  }
+  40%,
+  80% {
+    transform: translateX(4px);
+  }
+}
+
+.error .icon {
+  background: color-mix(in srgb, var(--color-danger) 15%, transparent);
+  border-color: color-mix(in srgb, var(--color-danger) 30%, transparent);
+}
+
+.error .icon svg {
+  stroke: var(--color-danger);
+}
+
+.error .name {
+  color: var(--color-danger);
+}
+
+/* ---- Handle styling ---- */
+
+.node :global(.react-flow__handle) {
+  width: 8px;
+  height: 8px;
+  background: var(--agent-color);
+  border: 2px solid var(--color-bg-secondary);
+  transition: all var(--transition-base);
+}
+
+.node:hover :global(.react-flow__handle) {
+  transform: scale(1.3);
+}
+
+.complete :global(.react-flow__handle) {
+  background: var(--color-success);
+}
+
+.error :global(.react-flow__handle) {
+  background: var(--color-danger);
+}

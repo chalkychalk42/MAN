@@ -1,0 +1,7 @@
+{
+  "levels": [
+    { "min": 0, "max": 30, "label": "Low Risk", "color": "#00ff88" },
+    { "min": 30, "max": 60, "label": "Medium Risk", "color": "#ffe14d" },
+    { "min": 60, "max": 100, "label": "High Risk", "color": "#ff2d7b" }
+  ]
+}

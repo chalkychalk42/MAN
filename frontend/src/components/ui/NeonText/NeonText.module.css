@@ -1,0 +1,73 @@
+/* ==========================================================================
+   NeonText Component Styles
+   ========================================================================== */
+
+.neonText {
+  font-family: var(--font-family-sans);
+  line-height: var(--line-height-tight);
+  margin: 0;
+  padding: 0;
+}
+
+/* --------------------------------------------------------------------------
+   Color Variants
+   -------------------------------------------------------------------------- */
+
+.cyan {
+  color: var(--color-cyan);
+}
+
+.green {
+  color: var(--color-green);
+}
+
+.purple {
+  color: var(--color-purple);
+}
+
+.orange {
+  color: var(--color-orange);
+}
+
+.pink {
+  color: var(--color-pink);
+}
+
+/* --------------------------------------------------------------------------
+   Glow Effects
+   -------------------------------------------------------------------------- */
+
+.glowCyan {
+  text-shadow:
+    0 0 7px rgba(0, 240, 255, 0.6),
+    0 0 15px rgba(0, 240, 255, 0.35),
+    0 0 30px rgba(0, 240, 255, 0.15);
+}
+
+.glowGreen {
+  text-shadow:
+    0 0 7px rgba(0, 255, 136, 0.6),
+    0 0 15px rgba(0, 255, 136, 0.35),
+    0 0 30px rgba(0, 255, 136, 0.15);
+}
+
+.glowPurple {
+  text-shadow:
+    0 0 7px rgba(168, 85, 247, 0.6),
+    0 0 15px rgba(168, 85, 247, 0.35),
+    0 0 30px rgba(168, 85, 247, 0.15);
+}
+
+.glowOrange {
+  text-shadow:
+    0 0 7px rgba(255, 107, 53, 0.6),
+    0 0 15px rgba(255, 107, 53, 0.35),
+    0 0 30px rgba(255, 107, 53, 0.15);
+}
+
+.glowPink {
+  text-shadow:
+    0 0 7px rgba(255, 45, 123, 0.6),
+    0 0 15px rgba(255, 45, 123, 0.35),
+    0 0 30px rgba(255, 45, 123, 0.15);
+}

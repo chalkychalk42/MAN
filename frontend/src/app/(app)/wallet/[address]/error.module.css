@@ -1,0 +1,57 @@
+.errorContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  padding: var(--space-6);
+}
+
+.errorPanel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-10);
+  max-width: 480px;
+  text-align: center;
+}
+
+.errorIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-full);
+  background: rgba(255, 45, 123, 0.1);
+  border: 2px solid var(--color-neon-pink);
+  color: var(--color-neon-pink);
+  font-size: 2rem;
+  font-weight: 700;
+  font-family: var(--font-family-mono);
+  box-shadow: var(--glow-pink);
+}
+
+.errorTitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.errorMessage {
+  color: var(--color-text-secondary);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.errorDigest {
+  font-family: var(--font-family-mono);
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+  opacity: 0.6;
+}
+
+.actions {
+  display: flex;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+}

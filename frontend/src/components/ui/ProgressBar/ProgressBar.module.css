@@ -1,0 +1,69 @@
+/* ==========================================================================
+   ProgressBar Component Styles
+   ========================================================================== */
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  width: 100%;
+}
+
+.track {
+  position: relative;
+  width: 100%;
+  height: 6px;
+  background: var(--color-bg-tertiary);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  border-radius: var(--radius-full);
+  transition: width var(--transition-base);
+}
+
+/* --------------------------------------------------------------------------
+   Color Variants
+   -------------------------------------------------------------------------- */
+
+.cyan .fill {
+  background: linear-gradient(90deg, var(--color-cyan), #00c8e0);
+  box-shadow: 0 0 8px rgba(0, 240, 255, 0.4), 0 0 16px rgba(0, 240, 255, 0.15);
+}
+
+.green .fill {
+  background: linear-gradient(90deg, var(--color-green), #00cc6e);
+  box-shadow: 0 0 8px rgba(0, 255, 136, 0.4), 0 0 16px rgba(0, 255, 136, 0.15);
+}
+
+.purple .fill {
+  background: linear-gradient(90deg, var(--color-purple), #8b3fd4);
+  box-shadow: 0 0 8px rgba(168, 85, 247, 0.4), 0 0 16px rgba(168, 85, 247, 0.15);
+}
+
+.orange .fill {
+  background: linear-gradient(90deg, var(--color-orange), #e05520);
+  box-shadow: 0 0 8px rgba(255, 107, 53, 0.4), 0 0 16px rgba(255, 107, 53, 0.15);
+}
+
+.pink .fill {
+  background: linear-gradient(90deg, var(--color-pink), #d41e63);
+  box-shadow: 0 0 8px rgba(255, 45, 123, 0.4), 0 0 16px rgba(255, 45, 123, 0.15);
+}
+
+/* --------------------------------------------------------------------------
+   Label
+   -------------------------------------------------------------------------- */
+
+.label {
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  text-align: right;
+  line-height: var(--line-height-tight);
+}

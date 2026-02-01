@@ -1,0 +1,107 @@
+.historyPage {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  padding: var(--space-6);
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.header {
+  margin-bottom: var(--space-2);
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.searchSection {
+  max-width: 500px;
+}
+
+.searchInput {
+  width: 100%;
+}
+
+.tableSection {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+}
+
+.tokenName {
+  font-weight: 600;
+  color: var(--color-text-primary);
+  font-size: 0.9rem;
+}
+
+.address {
+  font-family: var(--font-family-mono);
+  font-size: 0.82rem;
+  color: var(--color-text-secondary);
+  letter-spacing: 0.02em;
+}
+
+.riskScore {
+  display: inline-flex;
+}
+
+.pending {
+  font-family: var(--font-family-mono);
+  color: var(--color-text-secondary);
+  opacity: 0.5;
+}
+
+.walletCount {
+  font-family: var(--font-family-mono);
+  font-size: 0.85rem;
+  color: var(--color-text-primary);
+}
+
+.date {
+  font-size: 0.82rem;
+  color: var(--color-text-secondary);
+}
+
+.viewLink {
+  font-size: 0.82rem;
+  color: var(--color-neon-cyan);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease, text-shadow 0.2s ease;
+}
+
+.viewLink:hover {
+  text-shadow: 0 0 8px rgba(0, 240, 255, 0.4);
+}
+
+.emptyState {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-16);
+}
+
+.emptyText {
+  font-size: 0.95rem;
+  color: var(--color-text-secondary);
+}
+
+@media (max-width: 768px) {
+  .historyPage {
+    padding: var(--space-4);
+  }
+
+  .title {
+    font-size: 1.5rem;
+  }
+
+  .searchSection {
+    max-width: 100%;
+  }
+}

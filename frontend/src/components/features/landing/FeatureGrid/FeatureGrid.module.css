@@ -1,0 +1,262 @@
+/* ==========================================================================
+   FeatureGrid
+   2x3 responsive grid of glassmorphism feature cards with neon accents
+   ========================================================================== */
+
+.section {
+  position: relative;
+  padding: var(--space-20) var(--space-6);
+}
+
+.container {
+  max-width: var(--max-content-width);
+  margin: 0 auto;
+}
+
+/* --------------------------------------------------------------------------
+   Section Heading
+   -------------------------------------------------------------------------- */
+.sectionHeading {
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  text-align: center;
+  margin: 0 0 var(--space-12);
+  letter-spacing: -0.01em;
+}
+
+/* --------------------------------------------------------------------------
+   Grid
+   -------------------------------------------------------------------------- */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-6);
+}
+
+/* --------------------------------------------------------------------------
+   Card
+   -------------------------------------------------------------------------- */
+.card {
+  position: relative;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  transition:
+    transform var(--transition-base),
+    box-shadow var(--transition-base);
+}
+
+.card:hover {
+  transform: translateY(-4px);
+}
+
+/* Top accent border - colored per accent */
+.cardBorder {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  transition: box-shadow var(--transition-base);
+}
+
+.card:hover .cardBorder {
+  height: 2px;
+}
+
+.cardContent {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-8) var(--space-6);
+  height: 100%;
+  transition:
+    background var(--transition-base),
+    border-color var(--transition-base);
+}
+
+.card:hover .cardContent {
+  background: var(--glass-bg-hover);
+}
+
+/* --------------------------------------------------------------------------
+   Icon
+   -------------------------------------------------------------------------- */
+.iconWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--space-5);
+  transition: box-shadow var(--transition-base);
+}
+
+/* --------------------------------------------------------------------------
+   Card Text
+   -------------------------------------------------------------------------- */
+.cardTitle {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  margin: 0 0 var(--space-3);
+  line-height: var(--line-height-tight);
+}
+
+.cardDescription {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-relaxed);
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+/* --------------------------------------------------------------------------
+   Accent Variants (Cyan)
+   -------------------------------------------------------------------------- */
+.card[data-accent='cyan'] .cardBorder {
+  background: var(--color-cyan);
+}
+
+.card[data-accent='cyan']:hover .cardBorder {
+  box-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
+}
+
+.card[data-accent='cyan']:hover {
+  box-shadow: 0 8px 30px rgba(0, 240, 255, 0.08);
+}
+
+.card[data-accent='cyan'] .iconWrapper {
+  background: var(--color-cyan-dim);
+  color: var(--color-cyan);
+}
+
+/* --------------------------------------------------------------------------
+   Accent Variants (Purple)
+   -------------------------------------------------------------------------- */
+.card[data-accent='purple'] .cardBorder {
+  background: var(--color-purple);
+}
+
+.card[data-accent='purple']:hover .cardBorder {
+  box-shadow: 0 0 20px rgba(168, 85, 247, 0.4);
+}
+
+.card[data-accent='purple']:hover {
+  box-shadow: 0 8px 30px rgba(168, 85, 247, 0.08);
+}
+
+.card[data-accent='purple'] .iconWrapper {
+  background: var(--color-purple-dim);
+  color: var(--color-purple);
+}
+
+/* --------------------------------------------------------------------------
+   Accent Variants (Green)
+   -------------------------------------------------------------------------- */
+.card[data-accent='green'] .cardBorder {
+  background: var(--color-green);
+}
+
+.card[data-accent='green']:hover .cardBorder {
+  box-shadow: 0 0 20px rgba(0, 255, 136, 0.4);
+}
+
+.card[data-accent='green']:hover {
+  box-shadow: 0 8px 30px rgba(0, 255, 136, 0.08);
+}
+
+.card[data-accent='green'] .iconWrapper {
+  background: var(--color-green-dim);
+  color: var(--color-green);
+}
+
+/* --------------------------------------------------------------------------
+   Accent Variants (Orange)
+   -------------------------------------------------------------------------- */
+.card[data-accent='orange'] .cardBorder {
+  background: var(--color-orange);
+}
+
+.card[data-accent='orange']:hover .cardBorder {
+  box-shadow: 0 0 20px rgba(255, 107, 53, 0.4);
+}
+
+.card[data-accent='orange']:hover {
+  box-shadow: 0 8px 30px rgba(255, 107, 53, 0.08);
+}
+
+.card[data-accent='orange'] .iconWrapper {
+  background: var(--color-orange-dim);
+  color: var(--color-orange);
+}
+
+/* --------------------------------------------------------------------------
+   Accent Variants (Pink)
+   -------------------------------------------------------------------------- */
+.card[data-accent='pink'] .cardBorder {
+  background: var(--color-pink);
+}
+
+.card[data-accent='pink']:hover .cardBorder {
+  box-shadow: 0 0 20px rgba(255, 45, 123, 0.4);
+}
+
+.card[data-accent='pink']:hover {
+  box-shadow: 0 8px 30px rgba(255, 45, 123, 0.08);
+}
+
+.card[data-accent='pink'] .iconWrapper {
+  background: var(--color-pink-dim);
+  color: var(--color-pink);
+}
+
+/* --------------------------------------------------------------------------
+   Accent Variants (Yellow)
+   -------------------------------------------------------------------------- */
+.card[data-accent='yellow'] .cardBorder {
+  background: var(--color-yellow);
+}
+
+.card[data-accent='yellow']:hover .cardBorder {
+  box-shadow: 0 0 20px rgba(255, 225, 77, 0.4);
+}
+
+.card[data-accent='yellow']:hover {
+  box-shadow: 0 8px 30px rgba(255, 225, 77, 0.08);
+}
+
+.card[data-accent='yellow'] .iconWrapper {
+  background: var(--color-yellow-dim);
+  color: var(--color-yellow);
+}
+
+/* --------------------------------------------------------------------------
+   Responsive
+   -------------------------------------------------------------------------- */
+@media (max-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .section {
+    padding: var(--space-16) var(--space-4);
+  }
+
+  .sectionHeading {
+    font-size: var(--font-size-2xl);
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+
+  .cardContent {
+    padding: var(--space-6) var(--space-5);
+  }
+}

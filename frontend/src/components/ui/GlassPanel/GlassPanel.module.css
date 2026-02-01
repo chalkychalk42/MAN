@@ -1,0 +1,44 @@
+/* ==========================================================================
+   GlassPanel Component Styles
+   ========================================================================== */
+
+.panel {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  transition:
+    border-color var(--transition-base),
+    box-shadow var(--transition-base),
+    background var(--transition-base);
+}
+
+/* --------------------------------------------------------------------------
+   Variant: Default
+   -------------------------------------------------------------------------- */
+
+.default {
+  padding: var(--space-6);
+}
+
+/* --------------------------------------------------------------------------
+   Variant: Accent (Cyan border glow on hover)
+   -------------------------------------------------------------------------- */
+
+.accent {
+  padding: var(--space-6);
+}
+
+.accent:hover {
+  border-color: rgba(0, 240, 255, 0.25);
+  box-shadow: var(--glow-cyan);
+}
+
+/* --------------------------------------------------------------------------
+   Variant: Compact (Smaller padding)
+   -------------------------------------------------------------------------- */
+
+.compact {
+  padding: var(--space-3) var(--space-4);
+}

@@ -1,0 +1,93 @@
+@keyframes drawLine {
+  from {
+    stroke-dashoffset: 1000;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes fadeInDot {
+  from {
+    opacity: 0;
+    r: 0;
+  }
+  to {
+    opacity: 1;
+    r: 4;
+  }
+}
+
+@keyframes glow {
+  0%, 100% {
+    filter: drop-shadow(0 0 4px var(--color-neon-green));
+  }
+  50% {
+    filter: drop-shadow(0 0 8px var(--color-neon-green));
+  }
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  min-height: 300px;
+  height: 100%;
+}
+
+.header {
+  padding: var(--space-4) var(--space-5);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.heading {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.chartArea {
+  flex: 1;
+  position: relative;
+  padding: var(--space-4) var(--space-5) var(--space-4) var(--space-10);
+}
+
+.chart {
+  width: 100%;
+  height: 100%;
+  min-height: 200px;
+}
+
+.gridLine {
+  stroke: rgba(255, 255, 255, 0.04);
+  stroke-width: 1;
+}
+
+.line {
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+  animation: drawLine 2s ease-out forwards;
+  filter: drop-shadow(0 0 3px var(--color-neon-green));
+}
+
+.dot {
+  opacity: 0;
+  animation: fadeInDot 0.3s ease-out 1.8s forwards, glow 2s ease-in-out 2.1s infinite;
+}
+
+.yAxis {
+  position: absolute;
+  left: 0;
+  top: var(--space-4);
+  bottom: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 4px 0;
+}
+
+.yLabel {
+  font-family: var(--font-family-mono);
+  font-size: 0.65rem;
+  color: var(--color-text-secondary);
+  opacity: 0.5;
+  white-space: nowrap;
+}

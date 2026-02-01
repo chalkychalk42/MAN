@@ -1,0 +1,43 @@
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  padding: var(--space-6);
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.header {
+  margin-bottom: var(--space-2);
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.inputSection {
+  display: flex;
+  justify-content: center;
+}
+
+.statsSection {
+  margin-top: var(--space-2);
+}
+
+.scansSection {
+  margin-top: var(--space-4);
+}
+
+@media (max-width: 768px) {
+  .dashboard {
+    padding: var(--space-4);
+    gap: var(--space-6);
+  }
+
+  .title {
+    font-size: 1.5rem;
+  }
+}

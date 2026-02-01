@@ -1,0 +1,32 @@
+/* ---- Base (always visible) ---- */
+
+.basePath {
+  stroke: rgba(255, 255, 255, 0.08);
+  stroke-width: 2;
+  fill: none;
+}
+
+/* ---- Active overlay ---- */
+
+.activePath {
+  stroke-width: 2;
+  fill: none;
+  stroke-dasharray: 6 4;
+  animation: dash-flow 1.2s linear infinite;
+  filter: url(#edgeGlow);
+}
+
+@keyframes dash-flow {
+  0% {
+    stroke-dashoffset: 20;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* ---- Particles ---- */
+
+.particle {
+  filter: url(#particleGlow);
+}

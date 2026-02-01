@@ -1,0 +1,87 @@
+.container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+}
+
+.rank {
+  font-family: var(--font-family-mono);
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+  font-weight: 600;
+}
+
+.addressLink {
+  font-family: var(--font-family-mono);
+  font-size: 0.85rem;
+  color: var(--color-neon-cyan);
+  text-decoration: none;
+  letter-spacing: 0.02em;
+  transition: color 0.2s ease, text-shadow 0.2s ease;
+}
+
+.addressLink:hover {
+  color: var(--color-neon-cyan);
+  text-shadow: 0 0 8px rgba(0, 240, 255, 0.4);
+}
+
+.entryTime {
+  font-size: 0.82rem;
+  color: var(--color-text-secondary);
+}
+
+.pnlPositive {
+  font-family: var(--font-family-mono);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-neon-green);
+}
+
+.pnlNegative {
+  font-family: var(--font-family-mono);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-neon-pink);
+}
+
+.duration {
+  font-family: var(--font-family-mono);
+  font-size: 0.82rem;
+  color: var(--color-text-secondary);
+}
+
+.insiderScoreCell {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 100px;
+}
+
+.insiderBar {
+  flex: 1;
+  max-width: 80px;
+}
+
+.insiderValue {
+  font-family: var(--font-family-mono);
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+  min-width: 24px;
+  text-align: right;
+}
+
+.actionLink {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-secondary);
+  transition: color 0.2s ease;
+  padding: var(--space-1);
+}
+
+.actionLink:hover {
+  color: var(--color-neon-cyan);
+}

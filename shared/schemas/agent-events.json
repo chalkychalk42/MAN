@@ -1,0 +1,157 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "AgentEvents",
+  "description": "JSON Schema for WebSocket agent events in the Moltie Agent Network",
+  "definitions": {
+    "AgentType": {
+      "type": "string",
+      "enum": ["orchestrator", "scout", "tracker", "analyst", "sleuth", "sentinel"]
+    },
+    "AgentStatus": {
+      "type": "string",
+      "enum": ["idle", "running", "completed", "error", "waiting"]
+    },
+    "AgentStatusEvent": {
+      "type": "object",
+      "description": "Payload for agent:status WebSocket events",
+      "properties": {
+        "event": {
+          "type": "string",
+          "const": "agent:status"
+        },
+        "analysisId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the analysis run"
+        },
+        "agentType": {
+          "$ref": "#/definitions/AgentType"
+        },
+        "status": {
+          "$ref": "#/definitions/AgentStatus"
+        },
+        "progress": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Percentage completion of the agent's current task"
+        },
+        "message": {
+          "type": "string",
+          "description": "Human-readable status message"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["event", "analysisId", "agentType", "status", "timestamp"],
+      "additionalProperties": false
+    },
+    "AgentMessageEvent": {
+      "type": "object",
+      "description": "Payload for agent:message WebSocket events containing agent output data",
+      "properties": {
+        "event": {
+          "type": "string",
+          "const": "agent:message"
+        },
+        "analysisId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "agentType": {
+          "$ref": "#/definitions/AgentType"
+        },
+        "messageType": {
+          "type": "string",
+          "enum": [
+            "token_metadata",
+            "holder_list",
+            "money_flow",
+            "wallet_scores",
+            "connections",
+            "risk_assessment",
+            "ai_insight",
+            "error"
+          ],
+          "description": "Type of data payload the agent is sending"
+        },
+        "data": {
+          "type": "object",
+          "description": "Agent-specific data payload"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["event", "analysisId", "agentType", "messageType", "data", "timestamp"],
+      "additionalProperties": false
+    },
+    "AgentEdgeEvent": {
+      "type": "object",
+      "description": "Payload for agent:edge events indicating data flow between agents",
+      "properties": {
+        "event": {
+          "type": "string",
+          "const": "agent:edge"
+        },
+        "analysisId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "sourceAgent": {
+          "$ref": "#/definitions/AgentType"
+        },
+        "targetAgent": {
+          "$ref": "#/definitions/AgentType"
+        },
+        "animated": {
+          "type": "boolean",
+          "description": "Whether to animate the edge on the canvas"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["event", "analysisId", "sourceAgent", "targetAgent", "timestamp"],
+      "additionalProperties": false
+    },
+    "AnalysisCompleteEvent": {
+      "type": "object",
+      "description": "Payload for analysis:complete events",
+      "properties": {
+        "event": {
+          "type": "string",
+          "const": "analysis:complete"
+        },
+        "analysisId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["completed", "failed"]
+        },
+        "duration": {
+          "type": "number",
+          "description": "Total analysis duration in milliseconds"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["event", "analysisId", "status", "timestamp"],
+      "additionalProperties": false
+    }
+  },
+  "oneOf": [
+    { "$ref": "#/definitions/AgentStatusEvent" },
+    { "$ref": "#/definitions/AgentMessageEvent" },
+    { "$ref": "#/definitions/AgentEdgeEvent" },
+    { "$ref": "#/definitions/AnalysisCompleteEvent" }
+  ]
+}

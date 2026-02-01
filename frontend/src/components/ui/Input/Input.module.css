@@ -1,0 +1,119 @@
+/* ==========================================================================
+   Input Component Styles
+   ========================================================================== */
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  width: 100%;
+}
+
+.label {
+  font-family: var(--font-family-sans);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-tight);
+}
+
+.inputContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input {
+  width: 100%;
+  font-family: var(--font-family-sans);
+  color: var(--color-text-primary);
+  background: var(--color-bg-secondary);
+  border: 1px solid rgba(136, 136, 168, 0.12);
+  border-radius: var(--radius-md);
+  outline: none;
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast),
+    background var(--transition-fast);
+}
+
+.input::placeholder {
+  color: var(--color-text-muted);
+}
+
+/* --------------------------------------------------------------------------
+   Focus State - Animated Gradient Border
+   -------------------------------------------------------------------------- */
+
+.input:focus {
+  border-color: var(--color-cyan);
+  box-shadow:
+    0 0 0 1px rgba(0, 240, 255, 0.15),
+    0 0 10px rgba(0, 240, 255, 0.08);
+  background: var(--color-bg-tertiary);
+}
+
+/* --------------------------------------------------------------------------
+   Error State
+   -------------------------------------------------------------------------- */
+
+.inputError {
+  border-color: var(--color-pink);
+}
+
+.inputError:focus {
+  border-color: var(--color-pink);
+  box-shadow:
+    0 0 0 1px rgba(255, 45, 123, 0.15),
+    0 0 10px rgba(255, 45, 123, 0.08);
+}
+
+.errorText {
+  font-family: var(--font-family-sans);
+  font-size: var(--font-size-xs);
+  color: var(--color-pink);
+  line-height: var(--line-height-tight);
+}
+
+/* --------------------------------------------------------------------------
+   Icon
+   -------------------------------------------------------------------------- */
+
+.icon {
+  position: absolute;
+  left: var(--space-3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-muted);
+  pointer-events: none;
+  transition: color var(--transition-fast);
+}
+
+.input:focus ~ .icon,
+.inputContainer:focus-within .icon {
+  color: var(--color-cyan);
+}
+
+.hasIcon {
+  padding-left: calc(var(--space-3) + 20px + var(--space-2));
+}
+
+/* --------------------------------------------------------------------------
+   Sizes
+   -------------------------------------------------------------------------- */
+
+.sm {
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--font-size-sm);
+}
+
+.md {
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--font-size-base);
+}
+
+.lg {
+  padding: var(--space-4) var(--space-5);
+  font-size: var(--font-size-md);
+}

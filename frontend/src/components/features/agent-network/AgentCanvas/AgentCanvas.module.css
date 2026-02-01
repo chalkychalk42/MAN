@@ -1,0 +1,102 @@
+.canvas {
+  width: 100%;
+  height: 100%;
+  min-height: 500px;
+  background: var(--color-bg-primary);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--glass-border);
+  position: relative;
+}
+
+/* ---- React Flow overrides for dark theme ---- */
+
+.canvas :global(.react-flow__background) {
+  background: transparent;
+}
+
+.canvas :global(.react-flow__pane) {
+  cursor: grab;
+}
+
+.canvas :global(.react-flow__pane):active {
+  cursor: grabbing;
+}
+
+/* ---- Controls ---- */
+
+.canvas :global(.react-flow__controls) {
+  bottom: 16px;
+  right: 16px;
+  left: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+.canvas :global(.react-flow__controls-button) {
+  width: 28px;
+  height: 28px;
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  border-radius: 6px;
+  color: var(--color-text-secondary);
+  fill: var(--color-text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-base);
+}
+
+.canvas :global(.react-flow__controls-button):hover {
+  background: rgba(0, 240, 255, 0.08);
+  border-color: rgba(0, 240, 255, 0.25);
+  color: var(--color-agent-scout);
+  fill: var(--color-agent-scout);
+}
+
+.canvas :global(.react-flow__controls-button) svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* ---- Minimap ---- */
+
+.canvas :global(.react-flow__minimap) {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  bottom: 16px;
+  left: 16px;
+  overflow: hidden;
+}
+
+.canvas :global(.react-flow__minimap-mask) {
+  fill: rgba(255, 255, 255, 0.04);
+  stroke: rgba(255, 255, 255, 0.12);
+  stroke-width: 1;
+}
+
+/* ---- Selection ---- */
+
+.canvas :global(.react-flow__selection) {
+  border: 1px solid rgba(0, 240, 255, 0.4);
+  background: rgba(0, 240, 255, 0.05);
+}
+
+/* ---- Edges ---- */
+
+.canvas :global(.react-flow__edge) {
+  pointer-events: visibleStroke;
+}
+
+/* ---- Attribution hidden via proOptions ---- */
+
+.canvas :global(.react-flow__attribution) {
+  display: none;
+}

@@ -1,0 +1,113 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "WalletScore",
+  "description": "JSON Schema for a scored wallet in the Moltie Agent Network",
+  "type": "object",
+  "properties": {
+    "address": {
+      "type": "string",
+      "pattern": "^[1-9A-HJ-NP-Za-km-z]{32,44}$",
+      "description": "Solana wallet address (base58)"
+    },
+    "label": {
+      "type": ["string", "null"],
+      "description": "Human-readable label if known (e.g., 'Raydium Authority')"
+    },
+    "insiderScore": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Composite insider likelihood score (0 = unlikely, 100 = very likely)"
+    },
+    "riskLevel": {
+      "type": "string",
+      "enum": ["Low Risk", "Medium Risk", "High Risk"]
+    },
+    "metrics": {
+      "type": "object",
+      "description": "Individual scoring components",
+      "properties": {
+        "entryTiming": {
+          "type": "object",
+          "properties": {
+            "score": { "type": "number", "minimum": 0, "maximum": 100 },
+            "firstBuyTimestamp": { "type": ["string", "null"], "format": "date-time" },
+            "blocksAfterCreation": { "type": ["integer", "null"] },
+            "description": { "type": "string" }
+          },
+          "required": ["score"]
+        },
+        "pnl": {
+          "type": "object",
+          "properties": {
+            "score": { "type": "number", "minimum": 0, "maximum": 100 },
+            "realizedPnlSol": { "type": "number" },
+            "realizedPnlUsd": { "type": "number" },
+            "unrealizedPnlSol": { "type": "number" },
+            "unrealizedPnlUsd": { "type": "number" },
+            "roi": { "type": "number", "description": "Return on investment as a percentage" },
+            "description": { "type": "string" }
+          },
+          "required": ["score", "realizedPnlSol"]
+        },
+        "holdDuration": {
+          "type": "object",
+          "properties": {
+            "score": { "type": "number", "minimum": 0, "maximum": 100 },
+            "avgHoldMinutes": { "type": "number" },
+            "description": { "type": "string" }
+          },
+          "required": ["score"]
+        },
+        "behaviorPattern": {
+          "type": "object",
+          "properties": {
+            "score": { "type": "number", "minimum": 0, "maximum": 100 },
+            "pattern": {
+              "type": "string",
+              "enum": ["accumulate_and_dump", "steady_seller", "holder", "flipper", "sniper", "unknown"]
+            },
+            "tradeCount": { "type": "integer" },
+            "description": { "type": "string" }
+          },
+          "required": ["score", "pattern"]
+        },
+        "connectionDensity": {
+          "type": "object",
+          "properties": {
+            "score": { "type": "number", "minimum": 0, "maximum": 100 },
+            "connectedWallets": { "type": "integer" },
+            "clusterIds": {
+              "type": "array",
+              "items": { "type": "string" }
+            },
+            "description": { "type": "string" }
+          },
+          "required": ["score"]
+        }
+      },
+      "required": ["entryTiming", "pnl", "holdDuration", "behaviorPattern", "connectionDensity"]
+    },
+    "balance": {
+      "type": "string",
+      "description": "Current token balance"
+    },
+    "balancePercentage": {
+      "type": "number",
+      "description": "Percentage of total supply held"
+    },
+    "isInsider": {
+      "type": "boolean",
+      "description": "Whether the wallet is classified as a likely insider"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["early_buyer", "whale", "sniper", "connected", "high_pnl", "dev_wallet", "fresh_wallet"]
+      },
+      "description": "Classification tags applied to this wallet"
+    }
+  },
+  "required": ["address", "insiderScore", "riskLevel", "metrics", "isInsider"]
+}

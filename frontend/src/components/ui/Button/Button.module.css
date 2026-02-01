@@ -1,0 +1,147 @@
+/* ==========================================================================
+   Button Component Styles
+   ========================================================================== */
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  font-family: var(--font-family-sans);
+  font-weight: var(--font-weight-semibold);
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  cursor: pointer;
+  white-space: nowrap;
+  user-select: none;
+  text-decoration: none;
+  transition:
+    transform var(--transition-fast),
+    background var(--transition-fast),
+    box-shadow var(--transition-fast),
+    border-color var(--transition-fast),
+    opacity var(--transition-fast);
+}
+
+.button:focus-visible {
+  outline: 2px solid var(--color-cyan);
+  outline-offset: 2px;
+}
+
+.button:disabled,
+.button[aria-disabled='true'] {
+  opacity: 0.45;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* --------------------------------------------------------------------------
+   Sizes
+   -------------------------------------------------------------------------- */
+
+.sm {
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-tight);
+}
+
+.md {
+  padding: var(--space-3) var(--space-6);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-tight);
+}
+
+.lg {
+  padding: var(--space-4) var(--space-8);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-tight);
+}
+
+/* --------------------------------------------------------------------------
+   Variant: Primary (Neon Cyan Gradient + Glow)
+   -------------------------------------------------------------------------- */
+
+.primary {
+  background: linear-gradient(135deg, var(--color-cyan), #00b8cc);
+  color: var(--color-text-inverse);
+  border-color: var(--color-cyan);
+  box-shadow: var(--glow-cyan);
+}
+
+.primary:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow:
+    0 0 8px rgba(0, 240, 255, 0.3),
+    0 0 20px rgba(0, 240, 255, 0.2),
+    0 0 40px rgba(0, 240, 255, 0.1),
+    inset 0 0 15px rgba(0, 240, 255, 0.05);
+}
+
+.primary:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+/* --------------------------------------------------------------------------
+   Variant: Secondary (Glass Outlined)
+   -------------------------------------------------------------------------- */
+
+.secondary {
+  background: var(--glass-bg);
+  color: var(--color-text-primary);
+  border-color: var(--glass-border);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+}
+
+.secondary:hover:not(:disabled) {
+  background: var(--glass-bg-hover);
+  border-color: rgba(136, 136, 168, 0.2);
+  transform: translateY(-1px);
+}
+
+.secondary:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+/* --------------------------------------------------------------------------
+   Variant: Ghost (Transparent)
+   -------------------------------------------------------------------------- */
+
+.ghost {
+  background: transparent;
+  color: var(--color-text-secondary);
+  border-color: transparent;
+}
+
+.ghost:hover:not(:disabled) {
+  background: rgba(136, 136, 168, 0.08);
+  color: var(--color-text-primary);
+}
+
+.ghost:active:not(:disabled) {
+  background: rgba(136, 136, 168, 0.12);
+}
+
+/* --------------------------------------------------------------------------
+   Variant: Danger (Pink Gradient + Glow)
+   -------------------------------------------------------------------------- */
+
+.danger {
+  background: linear-gradient(135deg, var(--color-pink), #cc1a5e);
+  color: var(--color-text-primary);
+  border-color: var(--color-pink);
+  box-shadow: var(--glow-pink);
+}
+
+.danger:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow:
+    0 0 8px rgba(255, 45, 123, 0.3),
+    0 0 20px rgba(255, 45, 123, 0.2),
+    0 0 40px rgba(255, 45, 123, 0.1),
+    inset 0 0 15px rgba(255, 45, 123, 0.05);
+}
+
+.danger:active:not(:disabled) {
+  transform: translateY(0);
+}

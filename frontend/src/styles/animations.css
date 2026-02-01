@@ -1,0 +1,243 @@
+/* ==========================================================================
+   MAN Animations
+   Keyframe definitions for the neon cyberpunk UI
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   pulse-glow
+   Pulsing box-shadow for active agent nodes and status indicators.
+   Smoothly oscillates between a subtle and intense neon glow.
+   -------------------------------------------------------------------------- */
+@keyframes pulse-glow {
+  0%,
+  100% {
+    box-shadow:
+      0 0 5px rgba(0, 240, 255, 0.2),
+      0 0 15px rgba(0, 240, 255, 0.1),
+      0 0 30px rgba(0, 240, 255, 0.05);
+  }
+  50% {
+    box-shadow:
+      0 0 10px rgba(0, 240, 255, 0.4),
+      0 0 25px rgba(0, 240, 255, 0.2),
+      0 0 50px rgba(0, 240, 255, 0.1),
+      0 0 80px rgba(0, 240, 255, 0.05);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   gradient-rotate
+   Rotates a conic or angular gradient continuously.
+   Used for animated border effects and loading indicators.
+   -------------------------------------------------------------------------- */
+@keyframes gradient-rotate {
+  0% {
+    --gradient-angle: 0deg;
+  }
+  100% {
+    --gradient-angle: 360deg;
+  }
+}
+
+/* Fallback for browsers without @property support */
+@keyframes gradient-rotate-transform {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Register custom property for smooth gradient animation */
+@property --gradient-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+/* --------------------------------------------------------------------------
+   scan-line
+   Vertical sweep effect simulating a scanning beam.
+   Moves a translucent line from top to bottom.
+   -------------------------------------------------------------------------- */
+@keyframes scan-line {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   fade-in-up
+   Entrance animation: fades in while sliding upward.
+   Standard entrance for cards, modals, and content sections.
+   -------------------------------------------------------------------------- */
+@keyframes fade-in-up {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   flow-particle
+   Animates an element along an offset-path (motion path).
+   Fades in at the start and out at the end of the path.
+   -------------------------------------------------------------------------- */
+@keyframes flow-particle {
+  0% {
+    offset-distance: 0%;
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  85% {
+    opacity: 1;
+  }
+  100% {
+    offset-distance: 100%;
+    opacity: 0;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   neon-flicker
+   Simulates the intermittent flicker of a neon sign.
+   Rapidly toggles text-shadow for a realistic CRT/neon effect.
+   -------------------------------------------------------------------------- */
+@keyframes neon-flicker {
+  0%,
+  19%,
+  21%,
+  23%,
+  25%,
+  54%,
+  56%,
+  100% {
+    text-shadow:
+      0 0 7px rgba(0, 240, 255, 0.6),
+      0 0 15px rgba(0, 240, 255, 0.35),
+      0 0 30px rgba(0, 240, 255, 0.15);
+  }
+  20%,
+  24%,
+  55% {
+    text-shadow: none;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   shimmer
+   Loading skeleton animation with a sweeping highlight.
+   Moves a gradient highlight from left to right continuously.
+   -------------------------------------------------------------------------- */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   orbit
+   Circular orbit animation for decorative satellite elements.
+   Rotates around a center point while counter-rotating the element
+   to keep it upright.
+   -------------------------------------------------------------------------- */
+@keyframes orbit {
+  0% {
+    transform: rotate(0deg) translateX(30px) rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg) translateX(30px) rotate(-360deg);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Additional Utility Animations
+   -------------------------------------------------------------------------- */
+
+/* Simple fade in */
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* Scale up entrance */
+@keyframes scale-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Slide in from the right (for sidebars and panels) */
+@keyframes slide-in-right {
+  0% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Slide in from the left */
+@keyframes slide-in-left {
+  0% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Continuous spin for loading indicators */
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Breathing / subtle scale pulse */
+@keyframes breathe {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+}

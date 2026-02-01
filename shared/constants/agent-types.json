@@ -1,0 +1,10 @@
+{
+  "agents": [
+    { "type": "orchestrator", "displayName": "Hive Mind", "color": "#ffe14d" },
+    { "type": "scout", "displayName": "Scout", "color": "#00f0ff" },
+    { "type": "tracker", "displayName": "Tracker", "color": "#a855f7" },
+    { "type": "analyst", "displayName": "Analyst", "color": "#00ff88" },
+    { "type": "sleuth", "displayName": "Sleuth", "color": "#ff6b35" },
+    { "type": "sentinel", "displayName": "Sentinel", "color": "#ff2d7b" }
+  ]
+}

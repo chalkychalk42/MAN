@@ -1,0 +1,70 @@
+/* ==========================================================================
+   Badge Component Styles
+   ========================================================================== */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-3);
+  font-family: var(--font-family-sans);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-tight);
+  border-radius: var(--radius-full);
+  white-space: nowrap;
+  user-select: none;
+}
+
+/* --------------------------------------------------------------------------
+   Variant: Cyan
+   -------------------------------------------------------------------------- */
+
+.cyan {
+  background: var(--color-cyan-dim);
+  color: var(--color-cyan);
+}
+
+/* --------------------------------------------------------------------------
+   Variant: Green
+   -------------------------------------------------------------------------- */
+
+.green {
+  background: var(--color-green-dim);
+  color: var(--color-green);
+}
+
+/* --------------------------------------------------------------------------
+   Variant: Purple
+   -------------------------------------------------------------------------- */
+
+.purple {
+  background: var(--color-purple-dim);
+  color: var(--color-purple);
+}
+
+/* --------------------------------------------------------------------------
+   Variant: Orange
+   -------------------------------------------------------------------------- */
+
+.orange {
+  background: var(--color-orange-dim);
+  color: var(--color-orange);
+}
+
+/* --------------------------------------------------------------------------
+   Variant: Pink
+   -------------------------------------------------------------------------- */
+
+.pink {
+  background: var(--color-pink-dim);
+  color: var(--color-pink);
+}
+
+/* --------------------------------------------------------------------------
+   Variant: Yellow
+   -------------------------------------------------------------------------- */
+
+.yellow {
+  background: var(--color-yellow-dim);
+  color: var(--color-yellow);
+}

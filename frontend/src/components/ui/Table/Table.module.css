@@ -1,0 +1,130 @@
+/* ==========================================================================
+   Table Component Styles
+   ========================================================================== */
+
+.tableContainer {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-family-sans);
+  font-size: var(--font-size-sm);
+}
+
+/* --------------------------------------------------------------------------
+   Header
+   -------------------------------------------------------------------------- */
+
+.thead {
+  border-bottom: 1px solid rgba(136, 136, 168, 0.12);
+}
+
+.th {
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-muted);
+  text-align: left;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.sortable {
+  cursor: pointer;
+  transition: color var(--transition-fast);
+}
+
+.sortable:hover {
+  color: var(--color-text-secondary);
+}
+
+.thInner {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.sortArrow {
+  display: inline-flex;
+  flex-direction: column;
+  font-size: 0.5rem;
+  line-height: 1;
+  gap: 1px;
+  opacity: 0.3;
+  transition: opacity var(--transition-fast);
+}
+
+.sortActive {
+  color: var(--color-cyan);
+}
+
+.sortActive .sortArrow {
+  opacity: 1;
+}
+
+.arrowUp,
+.arrowDown {
+  line-height: 0.6;
+}
+
+.arrowDimmed {
+  opacity: 0.2;
+}
+
+/* --------------------------------------------------------------------------
+   Body
+   -------------------------------------------------------------------------- */
+
+.tbody {
+  color: var(--color-text-primary);
+}
+
+.tr {
+  border-bottom: 1px solid rgba(136, 136, 168, 0.06);
+  transition: background var(--transition-fast);
+}
+
+.tr:last-child {
+  border-bottom: none;
+}
+
+.clickableRow {
+  cursor: pointer;
+}
+
+.tr:hover {
+  background: rgba(136, 136, 168, 0.04);
+}
+
+.clickableRow:hover {
+  background: rgba(0, 240, 255, 0.03);
+}
+
+.td {
+  padding: var(--space-3) var(--space-4);
+  line-height: var(--line-height-normal);
+}
+
+/* --------------------------------------------------------------------------
+   Mono font utility for addresses/numbers
+   -------------------------------------------------------------------------- */
+
+.mono {
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-xs);
+}
+
+/* --------------------------------------------------------------------------
+   Empty State
+   -------------------------------------------------------------------------- */
+
+.emptyRow {
+  text-align: center;
+  color: var(--color-text-muted);
+  padding: var(--space-10) var(--space-4);
+}

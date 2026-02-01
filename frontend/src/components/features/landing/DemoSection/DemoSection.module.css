@@ -1,0 +1,210 @@
+/* ==========================================================================
+   DemoSection
+   Animated SVG agent network visualization with glass panel
+   ========================================================================== */
+
+.section {
+  position: relative;
+  padding: var(--space-20) var(--space-6);
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* --------------------------------------------------------------------------
+   Heading
+   -------------------------------------------------------------------------- */
+.heading {
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  text-align: center;
+  margin: 0 0 var(--space-10);
+  letter-spacing: -0.01em;
+}
+
+/* --------------------------------------------------------------------------
+   Demo Panel (glass container)
+   -------------------------------------------------------------------------- */
+.demoPanel {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-6);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Subtle scan line effect across the panel */
+.demoPanel::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(0, 240, 255, 0.015) 45%,
+    rgba(0, 240, 255, 0.03) 50%,
+    rgba(0, 240, 255, 0.015) 55%,
+    transparent 100%
+  );
+  animation: scanSweep 5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes scanSweep {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(100%);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Canvas Wrapper
+   -------------------------------------------------------------------------- */
+.canvasWrapper {
+  position: relative;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.canvas {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* --------------------------------------------------------------------------
+   Connection Lines
+   -------------------------------------------------------------------------- */
+.connectionLine {
+  stroke: rgba(136, 136, 168, 0.15);
+  stroke-width: 1.5;
+  stroke-dasharray: 6 4;
+  animation: dashFlow 3s linear infinite;
+}
+
+@keyframes dashFlow {
+  0% {
+    stroke-dashoffset: 0;
+  }
+  100% {
+    stroke-dashoffset: -20;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Data Flow Particles
+   -------------------------------------------------------------------------- */
+.particle {
+  fill: var(--color-cyan);
+  opacity: 0;
+  animation: particleMove 3s ease-in-out infinite;
+  offset-distance: 0%;
+}
+
+@keyframes particleMove {
+  0% {
+    offset-distance: 0%;
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.8;
+  }
+  90% {
+    opacity: 0.8;
+  }
+  100% {
+    offset-distance: 100%;
+    opacity: 0;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Agent Node
+   -------------------------------------------------------------------------- */
+.agentNode {
+  cursor: default;
+}
+
+.agentCircle {
+  stroke-width: 2;
+  transition: filter var(--transition-base);
+}
+
+.agentLabel {
+  font-family: var(--font-family-mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  pointer-events: none;
+}
+
+.agentName {
+  font-family: var(--font-family-sans);
+  font-size: 11px;
+  fill: var(--color-text-secondary);
+  pointer-events: none;
+}
+
+/* --------------------------------------------------------------------------
+   Pulse Ring
+   -------------------------------------------------------------------------- */
+.pulseRing {
+  fill: none;
+  stroke-width: 1;
+  opacity: 0;
+  animation: agentPulse 3s ease-in-out infinite;
+}
+
+@keyframes agentPulse {
+  0% {
+    r: 28;
+    opacity: 0.5;
+    stroke-width: 2;
+  }
+  50% {
+    r: 42;
+    opacity: 0;
+    stroke-width: 0.5;
+  }
+  100% {
+    r: 28;
+    opacity: 0;
+    stroke-width: 0.5;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Tagline
+   -------------------------------------------------------------------------- */
+.tagline {
+  font-size: var(--font-size-md);
+  color: var(--color-text-secondary);
+  text-align: center;
+  margin: var(--space-8) 0 0;
+}
+
+/* --------------------------------------------------------------------------
+   Responsive
+   -------------------------------------------------------------------------- */
+@media (max-width: 640px) {
+  .section {
+    padding: var(--space-16) var(--space-4);
+  }
+
+  .heading {
+    font-size: var(--font-size-2xl);
+  }
+
+  .demoPanel {
+    padding: var(--space-4);
+  }
+}

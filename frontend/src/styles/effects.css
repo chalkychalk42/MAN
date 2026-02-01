@@ -1,0 +1,267 @@
+/* ==========================================================================
+   MAN Effects & Utility Classes
+   Glassmorphism, neon text, animated borders, and visual effects
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Glassmorphism Card
+   Frosted glass surface with translucent background and blur.
+   Use on cards, panels, modals, and elevated surfaces.
+   -------------------------------------------------------------------------- */
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  transition:
+    background var(--transition-base),
+    border-color var(--transition-base),
+    box-shadow var(--transition-base);
+}
+
+.glass:hover {
+  background: var(--glass-bg-hover);
+  border-color: rgba(136, 136, 168, 0.15);
+  box-shadow: var(--shadow-md);
+}
+
+/* Heavy variant for overlays and modals */
+.glass--heavy {
+  background: rgba(18, 18, 26, 0.85);
+  backdrop-filter: var(--glass-blur-heavy);
+  -webkit-backdrop-filter: var(--glass-blur-heavy);
+}
+
+/* Subtle variant with less visual weight */
+.glass--subtle {
+  background: rgba(18, 18, 26, 0.4);
+  border-color: rgba(136, 136, 168, 0.05);
+}
+
+/* --------------------------------------------------------------------------
+   Gradient Border
+   Animated rotating conic-gradient border using a ::before pseudo-element.
+   Creates a vibrant, continuously spinning neon border effect.
+   -------------------------------------------------------------------------- */
+.gradient-border {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  padding: 1px;
+}
+
+.gradient-border::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: conic-gradient(
+    from var(--gradient-angle, 0deg),
+    var(--color-cyan),
+    var(--color-purple),
+    var(--color-pink),
+    var(--color-orange),
+    var(--color-green),
+    var(--color-cyan)
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  animation: gradient-rotate 4s linear infinite;
+}
+
+/* Static border variant (no animation) */
+.gradient-border--static::before {
+  animation: none;
+}
+
+/* --------------------------------------------------------------------------
+   Neon Text
+   Glowing text effects using text-shadow for a neon sign appearance.
+   -------------------------------------------------------------------------- */
+.neon-text {
+  color: var(--color-cyan);
+  text-shadow: var(--text-glow-cyan);
+}
+
+.neon-text--green {
+  color: var(--color-green);
+  text-shadow: var(--text-glow-green);
+}
+
+.neon-text--purple {
+  color: var(--color-purple);
+  text-shadow:
+    0 0 7px rgba(168, 85, 247, 0.6),
+    0 0 15px rgba(168, 85, 247, 0.35),
+    0 0 30px rgba(168, 85, 247, 0.15);
+}
+
+.neon-text--orange {
+  color: var(--color-orange);
+  text-shadow:
+    0 0 7px rgba(255, 107, 53, 0.6),
+    0 0 15px rgba(255, 107, 53, 0.35),
+    0 0 30px rgba(255, 107, 53, 0.15);
+}
+
+.neon-text--pink {
+  color: var(--color-pink);
+  text-shadow:
+    0 0 7px rgba(255, 45, 123, 0.6),
+    0 0 15px rgba(255, 45, 123, 0.35),
+    0 0 30px rgba(255, 45, 123, 0.15);
+}
+
+.neon-text--yellow {
+  color: var(--color-yellow);
+  text-shadow:
+    0 0 7px rgba(255, 225, 77, 0.6),
+    0 0 15px rgba(255, 225, 77, 0.35),
+    0 0 30px rgba(255, 225, 77, 0.15);
+}
+
+/* Flickering variant */
+.neon-text--flicker {
+  animation: neon-flicker 3s infinite;
+}
+
+/* --------------------------------------------------------------------------
+   Fade In Up - Entrance Animation Class
+   Apply to elements that should animate in when they mount or appear.
+   -------------------------------------------------------------------------- */
+.fade-in-up {
+  animation: fade-in-up 0.5s ease-out both;
+}
+
+/* Staggered children: each subsequent child delays slightly */
+.fade-in-up-stagger > * {
+  animation: fade-in-up 0.5s ease-out both;
+}
+
+.fade-in-up-stagger > *:nth-child(1) { animation-delay: 0ms; }
+.fade-in-up-stagger > *:nth-child(2) { animation-delay: 60ms; }
+.fade-in-up-stagger > *:nth-child(3) { animation-delay: 120ms; }
+.fade-in-up-stagger > *:nth-child(4) { animation-delay: 180ms; }
+.fade-in-up-stagger > *:nth-child(5) { animation-delay: 240ms; }
+.fade-in-up-stagger > *:nth-child(6) { animation-delay: 300ms; }
+.fade-in-up-stagger > *:nth-child(7) { animation-delay: 360ms; }
+.fade-in-up-stagger > *:nth-child(8) { animation-delay: 420ms; }
+
+/* --------------------------------------------------------------------------
+   Shimmer - Loading Skeleton
+   Apply to placeholder elements to show a sweeping highlight animation.
+   -------------------------------------------------------------------------- */
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--color-bg-tertiary) 25%,
+    var(--color-bg-elevated) 37%,
+    var(--color-bg-tertiary) 63%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.8s ease-in-out infinite;
+  border-radius: var(--radius-md);
+}
+
+/* Text-line skeleton */
+.shimmer--text {
+  height: 1em;
+  width: 100%;
+  border-radius: var(--radius-sm);
+}
+
+/* Circle skeleton (for avatars) */
+.shimmer--circle {
+  border-radius: var(--radius-full);
+  width: 40px;
+  height: 40px;
+}
+
+/* --------------------------------------------------------------------------
+   Glow Utility Classes
+   Box-shadow based glow effects for cards and containers.
+   -------------------------------------------------------------------------- */
+.glow-cyan {
+  box-shadow: var(--glow-cyan);
+}
+
+.glow-green {
+  box-shadow: var(--glow-green);
+}
+
+.glow-purple {
+  box-shadow: var(--glow-purple);
+}
+
+.glow-orange {
+  box-shadow: var(--glow-orange);
+}
+
+.glow-pink {
+  box-shadow: var(--glow-pink);
+}
+
+/* Pulse variant: continuously animates */
+.glow-pulse {
+  animation: pulse-glow 2.5s ease-in-out infinite;
+}
+
+/* --------------------------------------------------------------------------
+   Scan Line Effect
+   Overlay a sweeping scan line on a container.
+   Container must be position: relative with overflow: hidden.
+   -------------------------------------------------------------------------- */
+.scan-line {
+  position: relative;
+  overflow: hidden;
+}
+
+.scan-line::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(0, 240, 255, 0.03) 45%,
+    rgba(0, 240, 255, 0.06) 50%,
+    rgba(0, 240, 255, 0.03) 55%,
+    transparent 100%
+  );
+  animation: scan-line 4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* --------------------------------------------------------------------------
+   Orbit Decoration
+   Small satellite dots that orbit around a center element.
+   -------------------------------------------------------------------------- */
+.orbit-dot {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: var(--radius-full);
+  background: var(--color-cyan);
+  box-shadow: 0 0 6px var(--color-cyan);
+  animation: orbit 6s linear infinite;
+}
+
+.orbit-dot:nth-child(2) {
+  animation-delay: -2s;
+  background: var(--color-purple);
+  box-shadow: 0 0 6px var(--color-purple);
+}
+
+.orbit-dot:nth-child(3) {
+  animation-delay: -4s;
+  background: var(--color-green);
+  box-shadow: 0 0 6px var(--color-green);
+}
