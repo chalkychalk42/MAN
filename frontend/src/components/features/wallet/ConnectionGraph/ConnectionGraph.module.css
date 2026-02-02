@@ -1,3 +1,20 @@
+/* ==========================================================================
+   ConnectionGraph - Force-directed network graph
+   ========================================================================== */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Layout
+   -------------------------------------------------------------------------- */
+
 .container {
   display: flex;
   flex-direction: column;
@@ -8,6 +25,11 @@
 .header {
   padding: var(--space-4) var(--space-5);
   border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-2);
 }
 
 .heading {
@@ -15,7 +37,116 @@
   font-weight: 600;
 }
 
-.placeholder {
+/* --------------------------------------------------------------------------
+   Legend
+   -------------------------------------------------------------------------- */
+
+.legend {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  opacity: 0.7;
+}
+
+.legendDot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-full);
+  flex-shrink: 0;
+}
+
+/* --------------------------------------------------------------------------
+   Graph Area
+   -------------------------------------------------------------------------- */
+
+.graphArea {
+  flex: 1;
+  position: relative;
+  min-height: 260px;
+  overflow: hidden;
+  animation: fadeIn 0.4s ease-out;
+}
+
+.graph {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(18, 18, 26, 0.3) 0%,
+    transparent 70%
+  );
+}
+
+/* --------------------------------------------------------------------------
+   Tooltip
+   -------------------------------------------------------------------------- */
+
+.tooltip {
+  display: none;
+  position: absolute;
+  pointer-events: none;
+  z-index: 10;
+  background: rgba(18, 18, 26, 0.92);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(136, 136, 168, 0.12);
+  border-radius: var(--radius-md);
+  padding: var(--space-2) var(--space-3);
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.4),
+    inset 0 0 12px rgba(168, 85, 247, 0.03);
+  min-width: 140px;
+}
+
+.tooltipAddress {
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-primary);
+  font-weight: var(--font-weight-semibold);
+  margin-bottom: 4px;
+}
+
+.tooltipMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+}
+
+.tooltipStrength {
+  opacity: 0.7;
+}
+
+.tooltipBadge {
+  margin-top: 6px;
+  padding: 2px 6px;
+  background: var(--color-cyan-dim);
+  color: var(--color-cyan);
+  font-family: var(--font-family-mono);
+  font-size: 10px;
+  font-weight: var(--font-weight-semibold);
+  border-radius: var(--radius-sm);
+  display: inline-block;
+}
+
+/* --------------------------------------------------------------------------
+   States (loading, error, empty)
+   -------------------------------------------------------------------------- */
+
+.stateContainer {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -25,19 +156,34 @@
   padding: var(--space-8);
 }
 
-.icon {
-  color: var(--color-neon-purple);
-  opacity: 0.4;
+.stateIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-full);
+  background: var(--color-pink-dim);
+  color: var(--color-pink);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
 }
 
-.placeholderTitle {
-  font-size: 0.95rem;
-  font-weight: 500;
+.stateText {
+  font-size: var(--font-size-sm);
   color: var(--color-text-primary);
+  font-weight: var(--font-weight-medium);
 }
 
-.placeholderSubtext {
-  font-size: 0.82rem;
+.stateSubtext {
+  font-size: var(--font-size-xs);
   color: var(--color-text-secondary);
   opacity: 0.6;
+  text-align: center;
+}
+
+.emptyIcon {
+  color: var(--color-purple);
+  opacity: 0.3;
 }

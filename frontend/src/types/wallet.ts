@@ -31,3 +31,27 @@ export interface WalletConnection {
   strength: number;
   evidence_count: number;
 }
+
+export interface PNLDataPoint {
+  date: string;
+  cumulative_pnl_sol: number;
+}
+
+export interface Transaction {
+  signature: string;
+  timestamp: string;
+  type: 'buy' | 'sell' | 'transfer';
+  token_name: string | null;
+  token_address: string | null;
+  amount: number;
+  sol_value: number;
+  usd_value: number | null;
+}
+
+export interface PaginatedTransactions {
+  transactions: Transaction[];
+  total: number;
+  page: number;
+  limit: number;
+  has_more: boolean;
+}

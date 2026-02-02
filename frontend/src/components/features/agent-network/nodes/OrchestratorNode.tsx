@@ -1,5 +1,16 @@
+'use client';
+
+import { memo } from 'react';
+import type { NodeProps } from '@xyflow/react';
+import AgentNode from './AgentNode';
+import type { AgentNodeType } from './AgentNode';
+
 /**
- * Semantic re-export -- all agent types share the same AgentNode component,
- * differentiated at runtime through the `data` prop.
+ * OrchestratorNode -- cyan brain/hub icon.
+ * Wraps the base AgentNode, ensuring the orchestrator color is applied.
  */
-export { default } from './AgentNode';
+function OrchestratorNode(props: NodeProps<AgentNodeType>) {
+  return <AgentNode {...props} />;
+}
+
+export default memo(OrchestratorNode);

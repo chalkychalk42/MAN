@@ -1,228 +1,408 @@
 'use client'
 
-import { useRef, useEffect, useMemo, useState } from 'react'
+import { useRef, useEffect, useMemo, useState, useCallback } from 'react'
 import * as d3 from 'd3'
-import { sankey, sankeyLinkHorizontal, SankeyNode, SankeyLink } from 'd3-sankey'
+import {
+  sankey,
+  sankeyLinkHorizontal,
+  type SankeyNode as D3SankeyNode,
+  type SankeyLink as D3SankeyLink,
+} from 'd3-sankey'
+import type { FlowGraph, FlowNode, FlowLink } from '@/types/analysis'
 import styles from './SankeyFlow.module.css'
 
-interface FlowNode {
-  id: string
-  name: string
-  type: 'token' | 'wallet' | 'exchange' | 'unknown'
-}
+/* --------------------------------------------------------------------------
+   Types
+   -------------------------------------------------------------------------- */
 
-interface FlowLink {
-  source: string
-  target: string
-  value: number
-}
-
-interface FlowGraph {
-  nodes: FlowNode[]
-  links: FlowLink[]
-}
+/** d3-sankey augments nodes with layout props */
+type SankeyNodeExtra = D3SankeyNode<FlowNode, FlowLink>
+type SankeyLinkExtra = D3SankeyLink<FlowNode, FlowLink>
 
 interface SankeyFlowProps {
-  data: FlowGraph | null
-  width?: number
-  height?: number
+  flowGraph: FlowGraph | null
+  isLoading?: boolean
 }
 
-const nodeColors: Record<string, string> = {
+/* --------------------------------------------------------------------------
+   Constants
+   -------------------------------------------------------------------------- */
+
+const CLUSTER_COLORS = ['#00f0ff', '#a855f7', '#22c55e', '#ff6b35', '#ff2d7b'] as const
+const NODE_TYPE_COLORS: Record<string, string> = {
   token: '#00ff88',
   wallet: '#00f0ff',
   exchange: '#a855f7',
   unknown: '#8888a8',
 }
 
-function truncateLabel(name: string, maxLength = 16): string {
-  if (name.length <= maxLength) return name
-  return `${name.slice(0, 6)}...${name.slice(-4)}`
+const MARGIN = { top: 24, right: 48, bottom: 24, left: 48 }
+const NODE_WIDTH = 18
+const NODE_PADDING = 16
+const LINK_OPACITY_DEFAULT = 0.25
+const LINK_OPACITY_HOVER = 0.55
+const LINK_OPACITY_DIM = 0.08
+const NODE_OPACITY_DIM = 0.3
+
+/* --------------------------------------------------------------------------
+   Helpers
+   -------------------------------------------------------------------------- */
+
+function truncateAddress(address: string, maxLen = 16): string {
+  if (address.length <= maxLen) return address
+  return `${address.slice(0, 6)}...${address.slice(-4)}`
 }
 
-export default function SankeyFlow({ data, width: propWidth, height: propHeight }: SankeyFlowProps) {
-  const svgRef = useRef<SVGSVGElement>(null)
-  const containerRef = useRef<HTMLDivElement>(null)
-  const tooltipRef = useRef<HTMLDivElement>(null)
-  const [dimensions, setDimensions] = useState({ width: propWidth ?? 800, height: propHeight ?? 500 })
+function nodeColor(node: FlowNode): string {
+  if (node.group !== undefined && node.group >= 0) {
+    return CLUSTER_COLORS[node.group % CLUSTER_COLORS.length]
+  }
+  return NODE_TYPE_COLORS[node.type] ?? NODE_TYPE_COLORS.unknown
+}
 
-  // Observe container resizing for responsive layout
+function computeTotalFlow(node: SankeyNodeExtra): number {
+  const inbound = (node.targetLinks as SankeyLinkExtra[])?.reduce(
+    (sum, l) => sum + (l.value ?? 0),
+    0
+  ) ?? 0
+  const outbound = (node.sourceLinks as SankeyLinkExtra[])?.reduce(
+    (sum, l) => sum + (l.value ?? 0),
+    0
+  ) ?? 0
+  return Math.max(inbound, outbound)
+}
+
+function formatSol(value: number): string {
+  if (value >= 1_000_000) return `${(value / 1_000_000).toFixed(2)}M SOL`
+  if (value >= 1_000) return `${(value / 1_000).toFixed(2)}K SOL`
+  if (value >= 1) return `${value.toFixed(2)} SOL`
+  return `${value.toFixed(4)} SOL`
+}
+
+/* --------------------------------------------------------------------------
+   Component
+   -------------------------------------------------------------------------- */
+
+export default function SankeyFlow({ flowGraph, isLoading = false }: SankeyFlowProps) {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const svgRef = useRef<SVGSVGElement>(null)
+  const tooltipRef = useRef<HTMLDivElement>(null)
+  const [dimensions, setDimensions] = useState({ width: 800, height: 500 })
+
+  /* ---- Responsive sizing via ResizeObserver ---- */
   useEffect(() => {
-    if (propWidth && propHeight) return
     const container = containerRef.current
     if (!container) return
 
     const observer = new ResizeObserver((entries) => {
       for (const entry of entries) {
-        const { width: w, height: h } = entry.contentRect
+        const { width, height } = entry.contentRect
         setDimensions({
-          width: propWidth ?? Math.max(w, 300),
-          height: propHeight ?? Math.max(h, 400),
+          width: Math.max(Math.floor(width), 300),
+          height: Math.max(Math.floor(height), 400),
         })
       }
     })
 
     observer.observe(container)
     return () => observer.disconnect()
-  }, [propWidth, propHeight])
+  }, [])
 
   const { width, height } = dimensions
 
-  // Compute the sankey layout from data
+  /* ---- Compute Sankey layout ---- */
   const layout = useMemo(() => {
-    if (!data || data.nodes.length === 0) return null
+    if (!flowGraph || flowGraph.nodes.length === 0 || flowGraph.links.length === 0) {
+      return null
+    }
 
     const sankeyGenerator = sankey<FlowNode, FlowLink>()
-      .nodeWidth(20)
-      .nodePadding(14)
-      .extent([[40, 20], [width - 40, height - 20]])
-      .nodeId((d: any) => d.id)
+      .nodeWidth(NODE_WIDTH)
+      .nodePadding(NODE_PADDING)
+      .extent([
+        [MARGIN.left, MARGIN.top],
+        [width - MARGIN.right, height - MARGIN.bottom],
+      ])
+      .nodeId((d) => d.id)
 
-    const graph = sankeyGenerator({
-      nodes: data.nodes.map((d) => ({ ...d })),
-      links: data.links.map((d) => ({ ...d })),
-    })
+    try {
+      return sankeyGenerator({
+        nodes: flowGraph.nodes.map((n) => ({ ...n })),
+        links: flowGraph.links.map((l) => ({ ...l })),
+      })
+    } catch {
+      return null
+    }
+  }, [flowGraph, width, height])
 
-    return graph
-  }, [data, width, height])
+  /* ---- Tooltip helpers ---- */
+  const showTooltip = useCallback((event: MouseEvent, html: string) => {
+    const tooltip = tooltipRef.current
+    const container = containerRef.current
+    if (!tooltip || !container) return
 
-  // Render with D3
+    tooltip.innerHTML = html
+    tooltip.style.opacity = '1'
+    tooltip.style.pointerEvents = 'none'
+
+    const rect = container.getBoundingClientRect()
+    const x = event.clientX - rect.left + 14
+    const y = event.clientY - rect.top - 14
+
+    // Keep tooltip within container bounds
+    const tooltipRect = tooltip.getBoundingClientRect()
+    const clampedX = Math.min(x, width - tooltipRect.width - 8)
+    const clampedY = Math.max(8, y)
+
+    tooltip.style.left = `${clampedX}px`
+    tooltip.style.top = `${clampedY}px`
+  }, [width])
+
+  const moveTooltip = useCallback((event: MouseEvent) => {
+    const tooltip = tooltipRef.current
+    const container = containerRef.current
+    if (!tooltip || !container) return
+
+    const rect = container.getBoundingClientRect()
+    const x = event.clientX - rect.left + 14
+    const y = event.clientY - rect.top - 14
+
+    const tooltipRect = tooltip.getBoundingClientRect()
+    const clampedX = Math.min(x, width - tooltipRect.width - 8)
+    const clampedY = Math.max(8, y)
+
+    tooltip.style.left = `${clampedX}px`
+    tooltip.style.top = `${clampedY}px`
+  }, [width])
+
+  const hideTooltip = useCallback(() => {
+    const tooltip = tooltipRef.current
+    if (!tooltip) return
+    tooltip.style.opacity = '0'
+  }, [])
+
+  /* ---- D3 rendering ---- */
   useEffect(() => {
-    if (!svgRef.current || !layout) return
+    const svgEl = svgRef.current
+    if (!svgEl || !layout) return
 
-    const svg = d3.select(svgRef.current)
+    const svg = d3.select(svgEl)
     svg.selectAll('*').remove()
 
     svg.attr('viewBox', `0 0 ${width} ${height}`)
 
-    // Defs for link gradients
+    /* -- Filter definitions for neon glow -- */
     const defs = svg.append('defs')
 
-    layout.links.forEach((link: any, i: number) => {
+    const glowFilter = defs
+      .append('filter')
+      .attr('id', 'sankey-glow')
+      .attr('x', '-50%')
+      .attr('y', '-50%')
+      .attr('width', '200%')
+      .attr('height', '200%')
+
+    glowFilter
+      .append('feGaussianBlur')
+      .attr('stdDeviation', '3')
+      .attr('result', 'blur')
+
+    glowFilter
+      .append('feComposite')
+      .attr('in', 'SourceGraphic')
+      .attr('in2', 'blur')
+      .attr('operator', 'over')
+
+    /* -- Link gradients -- */
+    layout.links.forEach((link, i) => {
+      const srcNode = link.source as SankeyNodeExtra
+      const tgtNode = link.target as SankeyNodeExtra
+      const srcColor = nodeColor(srcNode as unknown as FlowNode)
+      const tgtColor = nodeColor(tgtNode as unknown as FlowNode)
+
       const gradient = defs
         .append('linearGradient')
-        .attr('id', `link-gradient-${i}`)
+        .attr('id', `sankey-link-grad-${i}`)
         .attr('gradientUnits', 'userSpaceOnUse')
-        .attr('x1', link.source.x1)
-        .attr('x2', link.target.x0)
+        .attr('x1', srcNode.x1 ?? 0)
+        .attr('x2', tgtNode.x0 ?? 0)
 
       gradient
         .append('stop')
         .attr('offset', '0%')
-        .attr('stop-color', nodeColors[link.source.type] ?? nodeColors.unknown)
+        .attr('stop-color', srcColor)
 
       gradient
         .append('stop')
         .attr('offset', '100%')
-        .attr('stop-color', nodeColors[link.target.type] ?? nodeColors.unknown)
+        .attr('stop-color', tgtColor)
     })
 
-    // Render links
-    const linkGroup = svg
-      .append('g')
-      .attr('class', styles.link)
+    /* -- Render links -- */
+    const linkGroup = svg.append('g').attr('class', styles.linkGroup)
 
-    linkGroup
+    const linkPaths = linkGroup
       .selectAll('path')
       .data(layout.links)
       .join('path')
       .attr('d', sankeyLinkHorizontal())
-      .attr('stroke', (_d: any, i: number) => `url(#link-gradient-${i})`)
-      .attr('stroke-width', (d: any) => Math.max(1, d.width))
-      .attr('stroke-opacity', 0.3)
-      .on('mouseenter', function (event: MouseEvent, d: any) {
-        d3.select(this).attr('stroke-opacity', 0.6)
-        showTooltip(event, `${d.source.name} → ${d.target.name}: ${d.value.toFixed(4)} SOL`)
+      .attr('fill', 'none')
+      .attr('stroke', (_, i) => `url(#sankey-link-grad-${i})`)
+      .attr('stroke-width', (d) => Math.max(1, (d as SankeyLinkExtra).width ?? 1))
+      .attr('stroke-opacity', LINK_OPACITY_DEFAULT)
+      .style('cursor', 'pointer')
+      .on('mouseenter', function (event: MouseEvent, d) {
+        const link = d as SankeyLinkExtra
+        const src = link.source as SankeyNodeExtra
+        const tgt = link.target as SankeyNodeExtra
+
+        // Dim all links, highlight this one
+        linkPaths.attr('stroke-opacity', (other) => (other === d ? LINK_OPACITY_HOVER : LINK_OPACITY_DIM))
+        // Dim unrelated nodes
+        nodeRects.attr('opacity', (n) => (n === src || n === tgt ? 1 : NODE_OPACITY_DIM))
+        nodeLabels.attr('opacity', (n) => (n === src || n === tgt ? 1 : NODE_OPACITY_DIM))
+
+        const srcName = truncateAddress((src as unknown as FlowNode).name)
+        const tgtName = truncateAddress((tgt as unknown as FlowNode).name)
+        showTooltip(
+          event,
+          `<span class="${styles.tooltipValue}">${formatSol(link.value)}</span>` +
+          `<span class="${styles.tooltipLabel}">${srcName} &rarr; ${tgtName}</span>`
+        )
       })
       .on('mousemove', function (event: MouseEvent) {
         moveTooltip(event)
       })
       .on('mouseleave', function () {
-        d3.select(this).attr('stroke-opacity', 0.3)
+        linkPaths.attr('stroke-opacity', LINK_OPACITY_DEFAULT)
+        nodeRects.attr('opacity', 1)
+        nodeLabels.attr('opacity', 1)
         hideTooltip()
       })
 
-    // Render nodes
-    const nodeGroup = svg
-      .append('g')
-      .attr('class', styles.node)
+    /* -- Render nodes -- */
+    const nodeGroup = svg.append('g').attr('class', styles.nodeGroup)
 
-    const nodes = nodeGroup
+    const nodeGs = nodeGroup
       .selectAll('g')
       .data(layout.nodes)
       .join('g')
 
-    nodes
+    const nodeRects = nodeGs
       .append('rect')
-      .attr('x', (d: any) => d.x0)
-      .attr('y', (d: any) => d.y0)
-      .attr('width', (d: any) => d.x1 - d.x0)
-      .attr('height', (d: any) => Math.max(1, d.y1 - d.y0))
-      .attr('fill', (d: any) => nodeColors[d.type] ?? nodeColors.unknown)
+      .attr('x', (d) => (d as SankeyNodeExtra).x0 ?? 0)
+      .attr('y', (d) => (d as SankeyNodeExtra).y0 ?? 0)
+      .attr('width', (d) => {
+        const n = d as SankeyNodeExtra
+        return (n.x1 ?? 0) - (n.x0 ?? 0)
+      })
+      .attr('height', (d) => {
+        const n = d as SankeyNodeExtra
+        return Math.max(2, (n.y1 ?? 0) - (n.y0 ?? 0))
+      })
+      .attr('fill', (d) => nodeColor(d as unknown as FlowNode))
       .attr('rx', 3)
-      .on('mouseenter', function (event: MouseEvent, d: any) {
-        const label = d.name !== d.id ? `${d.name} (${d.id})` : d.name
-        showTooltip(event, `${label}\nType: ${d.type}`)
+      .attr('ry', 3)
+      .attr('filter', 'url(#sankey-glow)')
+      .style('cursor', 'pointer')
+      .on('mouseenter', function (event: MouseEvent, d) {
+        const node = d as SankeyNodeExtra
+
+        // Find connected links
+        const connectedLinks = new Set<SankeyLinkExtra>()
+        const connectedNodes = new Set<SankeyNodeExtra>()
+        connectedNodes.add(node)
+
+        ;(node.sourceLinks as SankeyLinkExtra[])?.forEach((l) => {
+          connectedLinks.add(l)
+          connectedNodes.add(l.target as SankeyNodeExtra)
+        })
+        ;(node.targetLinks as SankeyLinkExtra[])?.forEach((l) => {
+          connectedLinks.add(l)
+          connectedNodes.add(l.source as SankeyNodeExtra)
+        })
+
+        // Highlight connected, dim rest
+        linkPaths.attr('stroke-opacity', (l) =>
+          connectedLinks.has(l as SankeyLinkExtra) ? LINK_OPACITY_HOVER : LINK_OPACITY_DIM
+        )
+        nodeRects.attr('opacity', (n) =>
+          connectedNodes.has(n as SankeyNodeExtra) ? 1 : NODE_OPACITY_DIM
+        )
+        nodeLabels.attr('opacity', (n) =>
+          connectedNodes.has(n as SankeyNodeExtra) ? 1 : NODE_OPACITY_DIM
+        )
+
+        const flowNode = d as unknown as FlowNode
+        const totalFlow = computeTotalFlow(node)
+        const fullAddr = flowNode.id !== flowNode.name ? flowNode.id : ''
+
+        showTooltip(
+          event,
+          `<span class="${styles.tooltipValue}">${truncateAddress(flowNode.name)}</span>` +
+          (fullAddr ? `<span class="${styles.tooltipAddress}">${truncateAddress(fullAddr, 24)}</span>` : '') +
+          `<span class="${styles.tooltipLabel}">Type: ${flowNode.type}</span>` +
+          `<span class="${styles.tooltipLabel}">Total flow: ${formatSol(totalFlow)}</span>`
+        )
       })
       .on('mousemove', function (event: MouseEvent) {
         moveTooltip(event)
       })
       .on('mouseleave', function () {
+        linkPaths.attr('stroke-opacity', LINK_OPACITY_DEFAULT)
+        nodeRects.attr('opacity', 1)
+        nodeLabels.attr('opacity', 1)
         hideTooltip()
       })
 
-    // Render labels
-    nodes
+    /* -- Node labels -- */
+    const nodeLabels = nodeGs
       .append('text')
-      .attr('x', (d: any) => (d.x0 < width / 2 ? d.x1 + 8 : d.x0 - 8))
-      .attr('y', (d: any) => (d.y0 + d.y1) / 2)
+      .attr('x', (d) => {
+        const n = d as SankeyNodeExtra
+        return (n.x0 ?? 0) < width / 2 ? (n.x1 ?? 0) + 8 : (n.x0 ?? 0) - 8
+      })
+      .attr('y', (d) => {
+        const n = d as SankeyNodeExtra
+        return ((n.y0 ?? 0) + (n.y1 ?? 0)) / 2
+      })
       .attr('dy', '0.35em')
-      .attr('text-anchor', (d: any) => (d.x0 < width / 2 ? 'start' : 'end'))
-      .text((d: any) => truncateLabel(d.name))
+      .attr('text-anchor', (d) => ((d as SankeyNodeExtra).x0 ?? 0) < width / 2 ? 'start' : 'end')
+      .attr('class', styles.nodeLabel)
+      .text((d) => truncateAddress((d as unknown as FlowNode).name))
 
-    // Tooltip helpers
-    function showTooltip(event: MouseEvent, text: string) {
-      const tooltip = tooltipRef.current
-      if (!tooltip) return
-      tooltip.style.display = 'block'
-      tooltip.textContent = text
-      moveTooltip(event)
-    }
+  }, [layout, width, height, showTooltip, moveTooltip, hideTooltip])
 
-    function moveTooltip(event: MouseEvent) {
-      const tooltip = tooltipRef.current
-      if (!tooltip) return
-      const container = containerRef.current
-      if (!container) return
-      const rect = container.getBoundingClientRect()
-      tooltip.style.left = `${event.clientX - rect.left + 12}px`
-      tooltip.style.top = `${event.clientY - rect.top - 10}px`
-    }
-
-    function hideTooltip() {
-      const tooltip = tooltipRef.current
-      if (!tooltip) return
-      tooltip.style.display = 'none'
-    }
-  }, [layout, width, height])
-
-  if (!data) {
+  /* ---- Loading state ---- */
+  if (isLoading) {
     return (
       <div className={styles.container}>
-        <div className={styles.placeholder}>Waiting for flow data...</div>
+        <div className={styles.loadingState}>
+          <div className={styles.loadingPulse} />
+          <span>Tracing fund flows...</span>
+        </div>
       </div>
     )
   }
 
+  /* ---- Empty state ---- */
+  if (!flowGraph || flowGraph.nodes.length === 0 || flowGraph.links.length === 0) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.emptyState}>No flow data available</div>
+      </div>
+    )
+  }
+
+  /* ---- Main render ---- */
   return (
-    <div className={styles.container} ref={containerRef} style={{ position: 'relative' }}>
+    <div className={styles.container} ref={containerRef}>
       <svg
         ref={svgRef}
         className={styles.svg}
-        width={width}
-        height={height}
+        preserveAspectRatio="xMidYMid meet"
       />
-      <div ref={tooltipRef} className={styles.tooltip} style={{ display: 'none' }} />
+      <div ref={tooltipRef} className={styles.tooltip} />
     </div>
   )
 }

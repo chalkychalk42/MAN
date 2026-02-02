@@ -1,5 +1,16 @@
+'use client';
+
+import { memo } from 'react';
+import type { NodeProps } from '@xyflow/react';
+import AgentNode from './AgentNode';
+import type { AgentNodeType } from './AgentNode';
+
 /**
- * Semantic re-export -- all agent types share the same AgentNode component,
- * differentiated at runtime through the `data` prop.
+ * AnalystNode -- green chart/bar icon.
+ * Wraps the base AgentNode, ensuring the analyst color is applied.
  */
-export { default } from './AgentNode';
+function AnalystNode(props: NodeProps<AgentNodeType>) {
+  return <AgentNode {...props} />;
+}
+
+export default memo(AnalystNode);

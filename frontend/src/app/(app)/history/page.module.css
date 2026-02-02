@@ -92,6 +92,86 @@
   color: var(--color-text-secondary);
 }
 
+.loadingState {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-16);
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+  padding-top: var(--space-4);
+}
+
+.pageInfo {
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+  font-family: var(--font-family-mono);
+}
+
+.trendingSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.trendingHeading {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.trendingGrid {
+  display: flex;
+  gap: var(--space-3);
+  overflow-x: auto;
+  padding-bottom: var(--space-2);
+}
+
+.trendingChip {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.2s ease, background 0.2s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.trendingChip:hover {
+  border-color: rgba(0, 240, 255, 0.2);
+  background: rgba(0, 240, 255, 0.04);
+}
+
+.trendingName {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+
+.trendingSymbol {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+}
+
+.trendingCount {
+  font-size: 0.72rem;
+  color: var(--color-text-secondary);
+  font-family: var(--font-family-mono);
+}
+
 @media (max-width: 768px) {
   .historyPage {
     padding: var(--space-4);

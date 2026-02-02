@@ -95,6 +95,21 @@
   color: var(--color-text-secondary);
 }
 
+.loadingState {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-12);
+}
+
+.pendingScore {
+  font-family: var(--font-family-mono);
+  color: var(--color-text-secondary);
+  opacity: 0.5;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
 .emptyState {
   display: flex;
   align-items: center;

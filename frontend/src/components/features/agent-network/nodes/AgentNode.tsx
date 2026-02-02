@@ -51,7 +51,7 @@ function AgentIcon({ agentType }: { agentType: AgentType }) {
     case 'tracker':
       return (
         <svg viewBox="0 0 24 24">
-          {/* flow / arrows */}
+          {/* flow / route arrows */}
           <polyline points="4 7 4 4 7 4" />
           <line x1="4" y1="4" x2="13" y2="13" />
           <polyline points="17 11 17 20 11 20" />
@@ -135,6 +135,9 @@ function AgentNode({ data }: NodeProps<AgentNodeType>) {
       {/* Scan-line overlay while working */}
       {isWorking && <div className={styles.scanLine} />}
 
+      {/* Status indicator dot */}
+      <div className={styles.statusDot} />
+
       {/* Complete checkmark badge */}
       {isComplete && (
         <div className={styles.completeCheck}>
@@ -153,13 +156,13 @@ function AgentNode({ data }: NodeProps<AgentNodeType>) {
       <div className={styles.name}>{label}</div>
 
       {/* Status text */}
-      <div className={styles.status}>
+      <div className={styles.taskText}>
         {statusText(status, currentTask)}
       </div>
 
       {/* Progress bar */}
       {showProgress && (
-        <div className={styles.progressTrack}>
+        <div className={styles.progressBar}>
           <div
             className={styles.progressFill}
             style={{ width: `${Math.min(progress, 100)}%` }}

@@ -1,8 +1,12 @@
+/* ==========================================================================
+   AgentNode - Glass panel node for the agent network canvas
+   ========================================================================== */
+
 .node {
-  width: 150px;
-  padding: var(--space-4);
-  border-radius: var(--radius-lg);
-  background: var(--glass-bg);
+  min-width: 180px;
+  padding: 16px;
+  border-radius: 12px;
+  background: rgba(15, 15, 25, 0.9);
   backdrop-filter: var(--glass-blur);
   border: 2px solid var(--agent-color);
   text-align: center;
@@ -15,6 +19,19 @@
 .node:hover {
   transform: scale(1.05);
   z-index: 10;
+}
+
+/* ---- Status indicator dot ---- */
+
+.statusDot {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-full);
+  background: var(--agent-color);
+  transition: all var(--transition-base);
 }
 
 /* ---- Icon ---- */
@@ -55,10 +72,10 @@
   transition: color var(--transition-base);
 }
 
-.status {
+.taskText {
   font-family: var(--font-family-mono);
   font-size: 10px;
-  color: var(--color-text-secondary);
+  color: var(--color-text-muted);
   margin-top: var(--space-1);
   white-space: nowrap;
   overflow: hidden;
@@ -66,9 +83,9 @@
   min-height: 14px;
 }
 
-/* ---- Progress ---- */
+/* ---- Progress bar ---- */
 
-.progressTrack {
+.progressBar {
   width: 100%;
   height: 2px;
   margin-top: var(--space-2);
@@ -85,23 +102,35 @@
   box-shadow: 0 0 6px var(--agent-color);
 }
 
-/* ---- State: idle ---- */
+/* ==========================================================================
+   State: idle
+   ========================================================================== */
 
 .idle {
-  opacity: 0.5;
+  opacity: 0.6;
   border-style: dashed;
+}
+
+.idle .statusDot {
+  background: var(--color-text-muted);
 }
 
 .idle:hover {
   opacity: 0.7;
 }
 
-/* ---- State: initializing ---- */
+/* ==========================================================================
+   State: initializing
+   ========================================================================== */
 
 .initializing {
   opacity: 0.8;
   border-style: solid;
   animation: init-fade 1.2s ease-in-out infinite alternate;
+}
+
+.initializing .statusDot {
+  animation: dot-blink 0.8s ease-in-out infinite alternate;
 }
 
 @keyframes init-fade {
@@ -113,12 +142,29 @@
   }
 }
 
-/* ---- State: working ---- */
+@keyframes dot-blink {
+  0% {
+    opacity: 0.3;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* ==========================================================================
+   State: working
+   ========================================================================== */
 
 .working {
   opacity: 1;
   border-style: solid;
   animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.working .statusDot {
+  background: var(--agent-color);
+  box-shadow: 0 0 6px var(--agent-color);
+  animation: dot-blink 0.6s ease-in-out infinite alternate;
 }
 
 @keyframes pulse-glow {
@@ -132,6 +178,8 @@
       0 0 40px color-mix(in srgb, var(--agent-color) 20%, transparent);
   }
 }
+
+/* Scan-line pseudo-element overlay */
 
 .scanLine {
   position: absolute;
@@ -155,12 +203,19 @@
   }
 }
 
-/* ---- State: complete ---- */
+/* ==========================================================================
+   State: complete
+   ========================================================================== */
 
 .complete {
   opacity: 1;
   border-color: var(--color-success);
   border-style: solid;
+}
+
+.complete .statusDot {
+  background: var(--color-success);
+  box-shadow: 0 0 4px var(--color-success);
 }
 
 .complete .icon {
@@ -179,7 +234,7 @@
 .completeCheck {
   position: absolute;
   top: var(--space-2);
-  right: var(--space-2);
+  left: var(--space-2);
   width: 18px;
   height: 18px;
   border-radius: var(--radius-full);
@@ -211,13 +266,20 @@
   stroke-linejoin: round;
 }
 
-/* ---- State: error ---- */
+/* ==========================================================================
+   State: error
+   ========================================================================== */
 
 .error {
   opacity: 1;
   border-color: var(--color-danger);
   border-style: solid;
   animation: error-shake 0.5s ease-in-out;
+}
+
+.error .statusDot {
+  background: var(--color-danger);
+  box-shadow: 0 0 4px var(--color-danger);
 }
 
 @keyframes error-shake {
@@ -248,7 +310,9 @@
   color: var(--color-danger);
 }
 
-/* ---- Handle styling ---- */
+/* ==========================================================================
+   Handle styling
+   ========================================================================== */
 
 .node :global(.react-flow__handle) {
   width: 8px;

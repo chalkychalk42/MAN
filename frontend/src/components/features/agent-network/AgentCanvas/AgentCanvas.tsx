@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import {
   ReactFlow,
   Background,
@@ -12,7 +12,14 @@ import {
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 
-import { AgentNode } from '../nodes';
+import {
+  OrchestratorNode,
+  ScoutNode,
+  TrackerNode,
+  AnalystNode,
+  SleuthNode,
+  SentinelNode,
+} from '../nodes';
 import type { AgentNodeData, AgentNodeType } from '../nodes';
 import { DataFlowEdge } from '../edges';
 import type { DataFlowEdgeType } from '../edges';
@@ -20,23 +27,6 @@ import { useAgentStore } from '@/stores/useAgentStore';
 import { AGENT_CONFIG } from '@/types/agent';
 import type { AgentType } from '@/types/agent';
 import styles from './AgentCanvas.module.css';
-
-/* ------------------------------------------------------------------ */
-/*  Node & edge type registries                                        */
-/* ------------------------------------------------------------------ */
-
-const nodeTypes = {
-  orchestrator: AgentNode,
-  scout: AgentNode,
-  tracker: AgentNode,
-  analyst: AgentNode,
-  sleuth: AgentNode,
-  sentinel: AgentNode,
-};
-
-const edgeTypes = {
-  dataFlow: DataFlowEdge,
-};
 
 /* ------------------------------------------------------------------ */
 /*  Initial layout -- diamond DAG                                      */
@@ -58,37 +48,37 @@ const INITIAL_NODES: AgentNodeType[] = [
   {
     id: 'orchestrator',
     type: 'orchestrator',
-    position: { x: 300, y: 0 },
+    position: { x: 250, y: 0 },
     data: makeNodeData('orchestrator'),
   },
   {
     id: 'scout',
     type: 'scout',
-    position: { x: 300, y: 140 },
+    position: { x: 250, y: 120 },
     data: makeNodeData('scout'),
   },
   {
     id: 'tracker',
     type: 'tracker',
-    position: { x: 100, y: 300 },
+    position: { x: 100, y: 260 },
     data: makeNodeData('tracker'),
   },
   {
     id: 'analyst',
     type: 'analyst',
-    position: { x: 500, y: 300 },
+    position: { x: 400, y: 260 },
     data: makeNodeData('analyst'),
   },
   {
     id: 'sleuth',
     type: 'sleuth',
-    position: { x: 300, y: 460 },
+    position: { x: 250, y: 400 },
     data: makeNodeData('sleuth'),
   },
   {
     id: 'sentinel',
     type: 'sentinel',
-    position: { x: 300, y: 600 },
+    position: { x: 250, y: 530 },
     data: makeNodeData('sentinel'),
   },
 ];
@@ -167,6 +157,27 @@ export default function AgentCanvas() {
   const [nodes, setNodes, onNodesChange] = useNodesState(INITIAL_NODES);
   const [edges, setEdges, onEdgesChange] = useEdgesState(INITIAL_EDGES);
 
+  /* Memoize node/edge type registries so React Flow does not re-register
+     them on every render. */
+  const nodeTypes = useMemo(
+    () => ({
+      orchestrator: OrchestratorNode,
+      scout: ScoutNode,
+      tracker: TrackerNode,
+      analyst: AnalystNode,
+      sleuth: SleuthNode,
+      sentinel: SentinelNode,
+    }),
+    [],
+  );
+
+  const edgeTypes = useMemo(
+    () => ({
+      dataFlow: DataFlowEdge,
+    }),
+    [],
+  );
+
   /* Subscribe to Zustand store -- agents map */
   const agents = useAgentStore((s) => s.agents);
 
@@ -230,9 +241,9 @@ export default function AgentCanvas() {
       >
         <Background
           variant={BackgroundVariant.Dots}
-          gap={24}
+          gap={20}
           size={1}
-          color="rgba(255,255,255,0.03)"
+          color="rgba(26,26,46,0.6)"
         />
         <Controls
           showInteractive={false}

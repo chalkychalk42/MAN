@@ -1,31 +1,19 @@
-@keyframes drawLine {
-  from {
-    stroke-dashoffset: 1000;
-  }
-  to {
-    stroke-dashoffset: 0;
-  }
-}
+/* ==========================================================================
+   PNLChart - Cyberpunk neon line chart
+   ========================================================================== */
 
-@keyframes fadeInDot {
+@keyframes fadeIn {
   from {
     opacity: 0;
-    r: 0;
   }
   to {
     opacity: 1;
-    r: 4;
   }
 }
 
-@keyframes glow {
-  0%, 100% {
-    filter: drop-shadow(0 0 4px var(--color-neon-green));
-  }
-  50% {
-    filter: drop-shadow(0 0 8px var(--color-neon-green));
-  }
-}
+/* --------------------------------------------------------------------------
+   Layout
+   -------------------------------------------------------------------------- */
 
 .container {
   display: flex;
@@ -47,47 +35,91 @@
 .chartArea {
   flex: 1;
   position: relative;
-  padding: var(--space-4) var(--space-5) var(--space-4) var(--space-10);
+  min-height: 220px;
+  animation: fadeIn 0.4s ease-out;
 }
 
 .chart {
+  display: block;
   width: 100%;
   height: 100%;
-  min-height: 200px;
 }
 
-.gridLine {
-  stroke: rgba(255, 255, 255, 0.04);
-  stroke-width: 1;
-}
+/* --------------------------------------------------------------------------
+   Tooltip
+   -------------------------------------------------------------------------- */
 
-.line {
-  stroke-dasharray: 1000;
-  stroke-dashoffset: 1000;
-  animation: drawLine 2s ease-out forwards;
-  filter: drop-shadow(0 0 3px var(--color-neon-green));
-}
-
-.dot {
-  opacity: 0;
-  animation: fadeInDot 0.3s ease-out 1.8s forwards, glow 2s ease-in-out 2.1s infinite;
-}
-
-.yAxis {
+.tooltip {
+  display: none;
   position: absolute;
-  left: 0;
-  top: var(--space-4);
-  bottom: var(--space-4);
+  pointer-events: none;
+  z-index: 10;
+  background: rgba(18, 18, 26, 0.92);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(136, 136, 168, 0.12);
+  border-radius: var(--radius-md);
+  padding: var(--space-2) var(--space-3);
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.4),
+    inset 0 0 12px rgba(0, 240, 255, 0.03);
+  min-width: 120px;
+}
+
+.tooltipDate {
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  margin-bottom: 2px;
+}
+
+.tooltipValue {
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+}
+
+/* --------------------------------------------------------------------------
+   States (loading, error, empty)
+   -------------------------------------------------------------------------- */
+
+.stateContainer {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  padding: 4px 0;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  padding: var(--space-8);
 }
 
-.yLabel {
+.stateIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-full);
+  background: var(--color-pink-dim);
+  color: var(--color-pink);
   font-family: var(--font-family-mono);
-  font-size: 0.65rem;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+}
+
+.stateText {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-primary);
+  font-weight: var(--font-weight-medium);
+}
+
+.stateSubtext {
+  font-size: var(--font-size-xs);
   color: var(--color-text-secondary);
-  opacity: 0.5;
-  white-space: nowrap;
+  opacity: 0.6;
+  text-align: center;
+}
+
+.emptyIcon {
+  color: var(--color-green);
+  opacity: 0.3;
 }

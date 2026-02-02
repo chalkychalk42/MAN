@@ -1,87 +1,18 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import Link from 'next/link';
-import { NeonText, Table, Badge, Input, GlassPanel } from '@/components/ui';
+import { useQuery } from '@tanstack/react-query';
+import { NeonText, Table, Badge, Input, GlassPanel, Spinner, Button } from '@/components/ui';
 import type { TableColumn } from '@/components/ui';
+import { api } from '@/lib/api';
 import { truncateAddress } from '@/lib/solana';
 import { formatTimeAgo } from '@/lib/formatters';
 import { useDebounce } from '@/hooks/useDebounce';
+import type { AnalysisSummary } from '@/types/analysis';
 import styles from './page.module.css';
 
-interface HistoryItem {
-  analysisId: string;
-  tokenName: string;
-  tokenSymbol: string;
-  contractAddress: string;
-  riskScore: number | null;
-  walletCount: number;
-  createdAt: string;
-  status: 'complete' | 'running' | 'error' | 'queued';
-}
-
-const MOCK_HISTORY: HistoryItem[] = [
-  {
-    analysisId: 'a1b2c3d4',
-    tokenName: 'Degen Pepe',
-    tokenSymbol: 'DPEPE',
-    contractAddress: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-    riskScore: 78,
-    walletCount: 142,
-    createdAt: new Date(Date.now() - 1000 * 60 * 15).toISOString(),
-    status: 'complete',
-  },
-  {
-    analysisId: 'e5f6g7h8',
-    tokenName: 'Moon Bonk',
-    tokenSymbol: 'MBONK',
-    contractAddress: 'DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263',
-    riskScore: 42,
-    walletCount: 89,
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(),
-    status: 'complete',
-  },
-  {
-    analysisId: 'i9j0k1l2',
-    tokenName: 'SolCat',
-    tokenSymbol: 'SCAT',
-    contractAddress: '7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU',
-    riskScore: 15,
-    walletCount: 234,
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 5).toISOString(),
-    status: 'complete',
-  },
-  {
-    analysisId: 'm3n4o5p6',
-    tokenName: 'Rug Magnet',
-    tokenSymbol: 'RUGM',
-    contractAddress: 'So11111111111111111111111111111111111111112',
-    riskScore: 92,
-    walletCount: 56,
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 12).toISOString(),
-    status: 'complete',
-  },
-  {
-    analysisId: 'q7r8s9t0',
-    tokenName: 'Based AI',
-    tokenSymbol: 'BAI',
-    contractAddress: 'mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So',
-    riskScore: null,
-    walletCount: 0,
-    createdAt: new Date(Date.now() - 1000 * 60 * 3).toISOString(),
-    status: 'running',
-  },
-  {
-    analysisId: 'u1v2w3x4',
-    tokenName: 'Pump Token',
-    tokenSymbol: 'PUMP',
-    contractAddress: '4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R',
-    riskScore: 67,
-    walletCount: 312,
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 48).toISOString(),
-    status: 'complete',
-  },
-];
+const PAGE_SIZE = 20;
 
 const COLUMNS: TableColumn[] = [
   { key: 'tokenName', label: 'Token' },
@@ -114,24 +45,28 @@ function getStatusVariant(status: string): 'green' | 'cyan' | 'pink' | 'orange' 
   }
 }
 
-function formatRow(item: HistoryItem) {
+function formatRow(item: AnalysisSummary) {
+  const tokenName = item.token?.name ?? 'Unknown';
+  const tokenSymbol = item.token?.symbol ?? '???';
+  const contractAddress = item.token?.contract_address ?? '';
+
   return {
     tokenName: (
-      <span className={styles.tokenName}>{item.tokenName}</span>
+      <span className={styles.tokenName}>{tokenName}</span>
     ),
     symbol: (
-      <Badge variant="cyan">{item.tokenSymbol}</Badge>
+      <Badge variant="cyan">{tokenSymbol}</Badge>
     ),
     contractAddress: (
       <span className={styles.address}>
-        {truncateAddress(item.contractAddress, 6)}
+        {contractAddress ? truncateAddress(contractAddress, 6) : '--'}
       </span>
     ),
     riskScore: (
       <span className={styles.riskScore}>
-        {item.riskScore !== null ? (
-          <Badge variant={getRiskBadgeVariant(item.riskScore)}>
-            {item.riskScore}
+        {item.risk_score !== null ? (
+          <Badge variant={getRiskBadgeVariant(item.risk_score)}>
+            {item.risk_score}
           </Badge>
         ) : (
           <span className={styles.pending}>--</span>
@@ -140,12 +75,12 @@ function formatRow(item: HistoryItem) {
     ),
     walletCount: (
       <span className={styles.walletCount}>
-        {item.walletCount || '--'}
+        {item.wallet_count || '--'}
       </span>
     ),
     date: (
       <span className={styles.date}>
-        {formatTimeAgo(item.createdAt)}
+        {item.started_at ? formatTimeAgo(item.started_at) : '--'}
       </span>
     ),
     status: (
@@ -154,33 +89,57 @@ function formatRow(item: HistoryItem) {
       </Badge>
     ),
     action: (
-      <Link href={`/analysis/${item.analysisId}`} className={styles.viewLink}>
+      <Link href={`/analysis/${item.analysis_id}`} className={styles.viewLink}>
         View
       </Link>
     ),
     // For sorting
-    _riskScore: item.riskScore ?? -1,
-    _walletCount: item.walletCount,
-    _date: new Date(item.createdAt).getTime(),
+    _riskScore: item.risk_score ?? -1,
+    _walletCount: item.wallet_count,
+    _date: item.started_at ? new Date(item.started_at).getTime() : 0,
   };
 }
 
 export default function HistoryPage() {
   const [searchQuery, setSearchQuery] = useState('');
+  const [page, setPage] = useState(1);
   const debouncedQuery = useDebounce(searchQuery, 300);
 
-  const filteredHistory = useMemo(() => {
-    if (!debouncedQuery) return MOCK_HISTORY;
-    const q = debouncedQuery.toLowerCase();
-    return MOCK_HISTORY.filter(
-      (item) =>
-        item.tokenName.toLowerCase().includes(q) ||
-        item.tokenSymbol.toLowerCase().includes(q) ||
-        item.contractAddress.toLowerCase().includes(q)
-    );
-  }, [debouncedQuery]);
+  // Reset to page 1 when search query changes
+  const effectiveQuery = debouncedQuery;
+  const offset = (page - 1) * PAGE_SIZE;
 
-  const rows = useMemo(() => filteredHistory.map(formatRow), [filteredHistory]);
+  // Fetch history with pagination and search
+  const {
+    data: historyData,
+    isLoading: historyLoading,
+    isError: historyError,
+  } = useQuery({
+    queryKey: ['history', effectiveQuery, page],
+    queryFn: () =>
+      api.getHistory({
+        query: effectiveQuery || undefined,
+        limit: PAGE_SIZE,
+        offset,
+      }),
+  });
+
+  // Fetch trending tokens
+  const { data: trendingData } = useQuery({
+    queryKey: ['trending'],
+    queryFn: () => api.getTrending(),
+  });
+
+  // Reset page when query changes
+  const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+    setPage(1);
+  }, []);
+
+  const items = historyData?.items ?? [];
+  const total = historyData?.total ?? 0;
+  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+  const rows = useMemo(() => items.map(formatRow), [items]);
 
   return (
     <div className={styles.historyPage}>
@@ -190,12 +149,38 @@ export default function HistoryPage() {
         </NeonText>
       </header>
 
+      {/* Trending */}
+      {trendingData && trendingData.length > 0 && (
+        <div className={styles.trendingSection}>
+          <span className={styles.trendingHeading}>Trending</span>
+          <div className={styles.trendingGrid}>
+            {trendingData.map((token) => (
+              <button
+                key={token.contract_address}
+                className={styles.trendingChip}
+                onClick={() => {
+                  setSearchQuery(token.name);
+                  setPage(1);
+                }}
+                type="button"
+              >
+                <span className={styles.trendingName}>{token.name}</span>
+                <span className={styles.trendingSymbol}>{token.symbol}</span>
+                <span className={styles.trendingCount}>
+                  {token.scan_count} scan{token.scan_count !== 1 ? 's' : ''}
+                </span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Search */}
       <div className={styles.searchSection}>
         <Input
           placeholder="Search by token name, symbol, or address..."
           value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
+          onChange={handleSearchChange}
           size="lg"
           className={styles.searchInput}
           icon={
@@ -216,24 +201,73 @@ export default function HistoryPage() {
         />
       </div>
 
-      {/* Table */}
-      {rows.length === 0 && !debouncedQuery ? (
-        <GlassPanel className={styles.emptyState}>
-          <span className={styles.emptyText}>No analysis history yet</span>
+      {/* Loading */}
+      {historyLoading && (
+        <GlassPanel className={styles.loadingState}>
+          <Spinner size="lg" color="cyan" />
         </GlassPanel>
-      ) : (
-        <div className={styles.tableSection}>
-          <Table
-            columns={COLUMNS}
-            data={rows}
-            emptyMessage={
-              debouncedQuery
-                ? `No results for "${debouncedQuery}"`
-                : 'No analysis history yet'
-            }
-            className={styles.table}
-          />
-        </div>
+      )}
+
+      {/* Error */}
+      {historyError && (
+        <GlassPanel className={styles.emptyState}>
+          <span className={styles.emptyText}>
+            Failed to load history. Please try again.
+          </span>
+        </GlassPanel>
+      )}
+
+      {/* Table */}
+      {!historyLoading && !historyError && (
+        <>
+          {items.length === 0 ? (
+            <GlassPanel className={styles.emptyState}>
+              <span className={styles.emptyText}>
+                {debouncedQuery
+                  ? `No results for "${debouncedQuery}"`
+                  : 'No analysis history yet'}
+              </span>
+            </GlassPanel>
+          ) : (
+            <div className={styles.tableSection}>
+              <Table
+                columns={COLUMNS}
+                data={rows}
+                emptyMessage={
+                  debouncedQuery
+                    ? `No results for "${debouncedQuery}"`
+                    : 'No analysis history yet'
+                }
+                className={styles.table}
+              />
+            </div>
+          )}
+
+          {/* Pagination */}
+          {total > PAGE_SIZE && (
+            <div className={styles.pagination}>
+              <Button
+                variant="ghost"
+                size="sm"
+                disabled={page <= 1}
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
+              >
+                Prev
+              </Button>
+              <span className={styles.pageInfo}>
+                {page} / {totalPages}
+              </span>
+              <Button
+                variant="ghost"
+                size="sm"
+                disabled={page >= totalPages}
+                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+              >
+                Next
+              </Button>
+            </div>
+          )}
+        </>
       )}
     </div>
   );

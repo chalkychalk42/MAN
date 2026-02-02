@@ -1,6 +1,6 @@
 .statsBar {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: var(--space-4);
 }
 
@@ -32,6 +32,35 @@
   font-size: 1.75rem;
   font-weight: 700;
   font-family: var(--font-family-mono);
+}
+
+.statIcon {
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.skeleton {
+  display: inline-block;
+  width: 3.5ch;
+  height: 1.75rem;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.04) 25%,
+    rgba(255, 255, 255, 0.08) 50%,
+    rgba(255, 255, 255, 0.04) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
 }
 
 @media (max-width: 1024px) {

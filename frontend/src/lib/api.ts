@@ -1,6 +1,6 @@
-import type { AnalysisResult, AnalysisSummary } from '@/types/analysis';
+import type { AnalysisResult, AnalysisSummary, PaginatedResponse, TrendingToken } from '@/types/analysis';
 import type { TokenMetadata } from '@/types/token';
-import type { WalletProfile, WalletConnection } from '@/types/wallet';
+import type { WalletProfile, WalletConnection, PNLDataPoint, PaginatedTransactions } from '@/types/wallet';
 
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
@@ -81,14 +81,13 @@ export const api = {
 
   getWalletTransactions: (
     address: string,
-    limit?: number,
-    offset?: number
+    params?: { page?: number; limit?: number }
   ) => {
-    const params = new URLSearchParams();
-    if (limit !== undefined) params.set('limit', String(limit));
-    if (offset !== undefined) params.set('offset', String(offset));
-    const qs = params.toString();
-    return fetcher<unknown[]>(
+    const searchParams = new URLSearchParams();
+    if (params?.page !== undefined) searchParams.set('page', String(params.page));
+    if (params?.limit !== undefined) searchParams.set('limit', String(params.limit));
+    const qs = searchParams.toString();
+    return fetcher<PaginatedTransactions>(
       `/api/v1/wallets/${address}/transactions${qs ? `?${qs}` : ''}`
     );
   },
@@ -105,26 +104,55 @@ export const api = {
     );
   },
 
+  getWalletPnlHistory: (address: string, period?: string) => {
+    const params = new URLSearchParams();
+    if (period) params.set('period', period);
+    const qs = params.toString();
+    return fetcher<PNLDataPoint[]>(
+      `/api/v1/wallets/${address}/pnl/history${qs ? `?${qs}` : ''}`
+    );
+  },
+
   // ── Tokens ────────────────────────────────────────────────────────────
 
   getToken: (contractAddress: string) =>
     fetcher<TokenMetadata>(`/api/v1/tokens/${contractAddress}`),
 
+  getTokenHolders: (
+    contractAddress: string,
+    params?: { limit?: number; offset?: number }
+  ) => {
+    const searchParams = new URLSearchParams();
+    if (params?.limit !== undefined) searchParams.set('limit', String(params.limit));
+    if (params?.offset !== undefined) searchParams.set('offset', String(params.offset));
+    const qs = searchParams.toString();
+    return fetcher<PaginatedResponse<WalletProfile>>(
+      `/api/v1/tokens/${contractAddress}/holders${qs ? `?${qs}` : ''}`
+    );
+  },
+
   // ── History ───────────────────────────────────────────────────────────
 
-  getHistory: (q?: string, limit?: number, offset?: number) => {
-    const params = new URLSearchParams();
-    if (q) params.set('q', q);
-    if (limit !== undefined) params.set('limit', String(limit));
-    if (offset !== undefined) params.set('offset', String(offset));
-    const qs = params.toString();
-    return fetcher<AnalysisSummary[]>(
+  getHistory: (params?: { query?: string; limit?: number; offset?: number }) => {
+    const searchParams = new URLSearchParams();
+    if (params?.query) searchParams.set('q', params.query);
+    if (params?.limit !== undefined) searchParams.set('limit', String(params.limit));
+    if (params?.offset !== undefined) searchParams.set('offset', String(params.offset));
+    const qs = searchParams.toString();
+    return fetcher<PaginatedResponse<AnalysisSummary>>(
       `/api/v1/history${qs ? `?${qs}` : ''}`
     );
   },
 
   getTrending: () =>
-    fetcher<AnalysisSummary[]>('/api/v1/history/trending'),
+    fetcher<TrendingToken[]>('/api/v1/history/trending'),
+
+  // ── Health ────────────────────────────────────────────────────────────
+
+  getHealth: () =>
+    fetcher<{ status: string; version: string; uptime: number }>(
+      '/api/v1/health'
+    ),
 };
 
 export { ApiError };

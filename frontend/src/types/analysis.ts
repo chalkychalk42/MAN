@@ -4,7 +4,8 @@ import type { WalletScore } from './wallet';
 export interface FlowNode {
   id: string;
   name: string;
-  type: 'token' | 'wallet' | 'exchange';
+  type: 'token' | 'wallet' | 'exchange' | 'unknown';
+  group?: number;
 }
 
 export interface FlowLink {
@@ -33,13 +34,36 @@ export interface AnalysisResult {
   status: 'queued' | 'running' | 'complete' | 'error';
 }
 
+export interface AnalysisSummaryToken {
+  contract_address: string;
+  name: string;
+  symbol: string;
+  image_url: string | null;
+}
+
 export interface AnalysisSummary {
   analysis_id: string;
-  token_name: string;
-  token_symbol: string;
-  contract_address: string;
+  status: string;
   risk_score: number | null;
   wallet_count: number;
-  created_at: string;
-  status: string;
+  transaction_count: number;
+  started_at: string | null;
+  completed_at: string | null;
+  token: AnalysisSummaryToken | null;
+}
+
+export interface PaginatedResponse<T> {
+  items: T[];
+  total: number;
+  offset: number;
+  limit: number;
+}
+
+export interface TrendingToken {
+  contract_address: string;
+  name: string;
+  symbol: string;
+  image_url: string | null;
+  scan_count: number;
+  max_risk: number | null;
 }

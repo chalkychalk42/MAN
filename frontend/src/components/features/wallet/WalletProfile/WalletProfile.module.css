@@ -1,9 +1,39 @@
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
 .container {
   display: flex;
   flex-direction: column;
   gap: var(--space-5);
   padding: var(--space-6);
+  position: relative;
+  overflow: hidden;
 }
+
+/* ── Risk-level accent borders ──────────────────────────────────────────── */
+
+.accentGreen {
+  border-color: rgba(0, 255, 136, 0.15);
+  box-shadow: inset 0 1px 0 rgba(0, 255, 136, 0.1);
+}
+
+.accentOrange {
+  border-color: rgba(255, 107, 53, 0.15);
+  box-shadow: inset 0 1px 0 rgba(255, 107, 53, 0.1);
+}
+
+.accentPink {
+  border-color: rgba(255, 45, 123, 0.15);
+  box-shadow: inset 0 1px 0 rgba(255, 45, 123, 0.1);
+}
+
+/* ── Address Row ────────────────────────────────────────────────────────── */
 
 .addressRow {
   display: flex;
@@ -29,7 +59,7 @@
   font-family: var(--font-family-mono);
   padding: 4px 12px;
   cursor: pointer;
-  transition: background 0.2s ease, border-color 0.2s ease;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
   flex-shrink: 0;
 }
 
@@ -37,6 +67,40 @@
   background: rgba(0, 240, 255, 0.2);
   border-color: var(--color-neon-cyan);
 }
+
+.copyButtonCopied {
+  background: rgba(0, 255, 136, 0.15);
+  border-color: rgba(0, 255, 136, 0.3);
+  color: var(--color-neon-green);
+}
+
+.externalLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.75rem;
+  font-family: var(--font-family-mono);
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.03);
+  transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+  flex-shrink: 0;
+}
+
+.externalLink:hover {
+  color: var(--color-neon-cyan);
+  border-color: rgba(0, 240, 255, 0.2);
+  background: rgba(0, 240, 255, 0.05);
+}
+
+.externalIcon {
+  flex-shrink: 0;
+}
+
+/* ── Tags ───────────────────────────────────────────────────────────────── */
 
 .tagsRow {
   display: flex;
@@ -51,9 +115,11 @@
   opacity: 0.6;
 }
 
+/* ── Stats Grid ─────────────────────────────────────────────────────────── */
+
 .statsRow {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(7, 1fr);
   gap: var(--space-3);
   padding-top: var(--space-3);
   border-top: 1px solid rgba(255, 255, 255, 0.04);
@@ -89,6 +155,106 @@
   font-family: var(--font-family-mono);
 }
 
+.statValueSmall {
+  font-size: 0.95rem;
+  font-weight: 600;
+  font-family: var(--font-family-mono);
+}
+
+.statSub {
+  font-size: 0.72rem;
+  font-family: var(--font-family-mono);
+  margin-top: 2px;
+}
+
+.subPositive {
+  color: var(--color-green);
+}
+
+.subNegative {
+  color: var(--color-pink);
+}
+
+.statBar {
+  margin-top: var(--space-1);
+}
+
+/* ── Skeleton Loading ───────────────────────────────────────────────────── */
+
+.skeletonRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.skeletonAddress {
+  width: 380px;
+  height: 20px;
+  background: linear-gradient(
+    90deg,
+    var(--color-bg-secondary) 25%,
+    var(--color-bg-tertiary) 50%,
+    var(--color-bg-secondary) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  border-radius: var(--radius-sm);
+}
+
+.skeletonButton {
+  width: 60px;
+  height: 26px;
+  background: linear-gradient(
+    90deg,
+    var(--color-bg-secondary) 25%,
+    var(--color-bg-tertiary) 50%,
+    var(--color-bg-secondary) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  border-radius: var(--radius-sm);
+}
+
+.skeletonTags {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.skeletonTag {
+  width: 72px;
+  height: 22px;
+  background: linear-gradient(
+    90deg,
+    var(--color-bg-secondary) 25%,
+    var(--color-bg-tertiary) 50%,
+    var(--color-bg-secondary) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  border-radius: var(--radius-full);
+}
+
+.skeletonStat {
+  height: 80px;
+  background: linear-gradient(
+    90deg,
+    var(--color-bg-secondary) 25%,
+    var(--color-bg-tertiary) 50%,
+    var(--color-bg-secondary) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  border-radius: var(--radius-md);
+}
+
+/* ── Responsive ─────────────────────────────────────────────────────────── */
+
+@media (max-width: 1280px) {
+  .statsRow {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
 @media (max-width: 1024px) {
   .statsRow {
     grid-template-columns: repeat(3, 1fr);
@@ -102,5 +268,9 @@
 
   .container {
     padding: var(--space-4);
+  }
+
+  .address {
+    font-size: 0.85rem;
   }
 }
