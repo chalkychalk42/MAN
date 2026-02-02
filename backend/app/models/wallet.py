@@ -10,6 +10,7 @@ from typing import Optional
 from sqlalchemy import (
     ARRAY,
     DateTime,
+    Float,
     Index,
     Integer,
     Numeric,
@@ -49,6 +50,13 @@ class Wallet(Base, TimestampMixin):
     )
     risk_score: Mapped[Optional[Decimal]] = mapped_column(
         Numeric(5, 2), nullable=True
+    )
+    cross_token_score: Mapped[Optional[float]] = mapped_column(
+        Float, nullable=True
+    )
+    early_token_count: Mapped[int] = mapped_column(Integer, default=0)
+    early_token_hit_rate: Mapped[Optional[float]] = mapped_column(
+        Float, nullable=True
     )
     first_seen_at: Mapped[Optional[datetime]] = mapped_column(
         DateTime(timezone=True), nullable=True

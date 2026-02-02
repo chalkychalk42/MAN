@@ -27,6 +27,15 @@ class Settings(BaseSettings):
 
     # Rate limiting
     free_scans_per_hour: int = 10
+    helius_rate_limit: int = 50
+    helius_rate_window: int = 10
+    openai_rate_limit: int = 20
+    openai_rate_window: int = 60
+
+    # Queue / Workers
+    queue_max_batch_size: int = 500
+    worker_heartbeat_interval: int = 10
+    worker_job_timeout: int = 300
 
     class Config:
         env_file = ".env"

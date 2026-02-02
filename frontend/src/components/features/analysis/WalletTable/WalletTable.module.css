@@ -73,6 +73,15 @@
   text-align: right;
 }
 
+.combinedValue {
+  font-family: var(--font-family-mono);
+  font-size: 0.75rem;
+  color: var(--color-neon-purple);
+  font-weight: 600;
+  min-width: 24px;
+  text-align: right;
+}
+
 .actionLink {
   display: flex;
   align-items: center;

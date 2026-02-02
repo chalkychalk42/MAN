@@ -41,9 +41,11 @@ class ScoutAgent(BaseAgent):
             )
             return state
 
+        rate_limiter = state.get("_rate_limiter")
         solana = SolanaService(
             helius_api_key=settings.helius_api_key,
             rpc_url=settings.solana_rpc_url,
+            rate_limiter=rate_limiter,
         )
 
         try:

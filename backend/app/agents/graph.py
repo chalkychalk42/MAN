@@ -118,11 +118,19 @@ async def run_analysis_graph(
     analysis_id: str,
     sio: Any,
     room: str,
+    rate_limiter: Any = None,
 ) -> dict[str, Any]:
     """Run the analysis pipeline.
 
     Uses LangGraph if available; otherwise delegates to the
     :class:`HiveMindOrchestrator`.
+
+    Parameters
+    ----------
+    rate_limiter:
+        Optional :class:`DistributedRateLimiter` instance injected into
+        the pipeline state so that every agent can throttle outbound API
+        calls.
     """
     if _compiled_graph is not None:
         logger.info("Running analysis via LangGraph for %s", contract_address)
@@ -132,10 +140,12 @@ async def run_analysis_graph(
             "room": room,
             "status": "running",
             "_sio": sio,
+            "_rate_limiter": rate_limiter,
         }
         result = await _compiled_graph.ainvoke(initial_state)
-        # Clean up internal key before returning
+        # Clean up internal keys before returning
         result.pop("_sio", None)
+        result.pop("_rate_limiter", None)
         return result
 
     # Fallback

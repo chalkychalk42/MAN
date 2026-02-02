@@ -6,6 +6,11 @@ export interface WalletScore {
   hold_duration_hours: number;
   insider_score: number;
   risk_score: number;
+  cross_token_score: number | null;
+  combined_insider_score: number | null;
+  early_token_count: number;
+  early_token_hit_rate: number | null;
+  tokens_analyzed: number;
   label: string | null;
   tags: string[];
 }
@@ -19,6 +24,11 @@ export interface WalletProfile {
   total_trades: number;
   insider_score: number;
   risk_score: number;
+  cross_token_score: number | null;
+  combined_insider_score: number | null;
+  early_token_count: number;
+  early_token_hit_rate: number | null;
+  tokens_analyzed: number;
   first_seen_at: string | null;
   last_active_at: string | null;
   tags: string[];

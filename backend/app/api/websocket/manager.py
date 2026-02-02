@@ -8,10 +8,17 @@ from typing import Any
 
 import socketio
 
+from app.config import settings
+
 logger = logging.getLogger(__name__)
 
-# Async Socket.IO server
+# Redis Pub/Sub manager for distributed WebSocket broadcasting.
+# This allows worker processes to emit events through Redis that the
+# API server relays to connected clients.
+_redis_mgr = socketio.AsyncRedisManager(settings.redis_url)
+
 sio = socketio.AsyncServer(
+    client_manager=_redis_mgr,
     async_mode="asgi",
     cors_allowed_origins="*",
     logger=False,

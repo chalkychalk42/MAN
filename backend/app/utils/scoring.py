@@ -133,3 +133,70 @@ def calculate_risk_score(
         score += 5
 
     return min(max(score, 0.0), 100.0)
+
+
+def calculate_cross_token_score(
+    tokens_traded: int,
+    early_entries: int,
+    profitable_early_entries: int,
+    avg_early_pnl_pct: float,
+    recent_early_count_30d: int,
+) -> float:
+    """Compute cross-token insider likelihood (0-100).
+
+    A wallet consistently entering tokens early and profiting
+    is likely an insider or has alpha access.
+    """
+    if tokens_traded == 0 or early_entries == 0:
+        return 0.0
+
+    # Consistency (0-35): what % of tokens they traded were entered early
+    consistency = (early_entries / tokens_traded) * 100
+    consistency_score = min(consistency, 100) * 0.35
+
+    # Hit rate (0-30): what % of early entries were profitable
+    hit_rate = (profitable_early_entries / early_entries) * 100
+    hit_rate_score = min(hit_rate, 100) * 0.30
+
+    # Avg PNL (0-20): how much they profit on early entries
+    if avg_early_pnl_pct > 1000:
+        pnl_score = 20
+    elif avg_early_pnl_pct > 500:
+        pnl_score = 16
+    elif avg_early_pnl_pct > 200:
+        pnl_score = 12
+    elif avg_early_pnl_pct > 50:
+        pnl_score = 8
+    elif avg_early_pnl_pct > 0:
+        pnl_score = 4
+    else:
+        pnl_score = 0
+
+    # Volume (0-15): number of early entries in recent 30 days
+    if recent_early_count_30d >= 10:
+        volume_score = 15
+    elif recent_early_count_30d >= 5:
+        volume_score = 12
+    elif recent_early_count_30d >= 3:
+        volume_score = 8
+    elif recent_early_count_30d >= 1:
+        volume_score = 4
+    else:
+        volume_score = 0
+
+    return min(max(consistency_score + hit_rate_score + pnl_score + volume_score, 0.0), 100.0)
+
+
+def calculate_combined_insider_score(
+    single_token_score: float,
+    cross_token_score: float,
+) -> float:
+    """Combine single-token and cross-token scores.
+
+    Cross-token history is weighted more heavily (60%) because
+    consistent early entry across many tokens is the strongest insider signal.
+    """
+    return min(
+        single_token_score * 0.40 + cross_token_score * 0.60,
+        100.0,
+    )

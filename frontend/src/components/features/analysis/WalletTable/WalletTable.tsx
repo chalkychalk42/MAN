@@ -17,7 +17,9 @@ const COLUMNS: TableColumn[] = [
   { key: 'entry_time', label: 'Entry Time', sortable: true },
   { key: 'pnl', label: 'PNL %', sortable: true },
   { key: 'hold_duration', label: 'Hold Duration' },
-  { key: 'insider_score', label: 'Insider Score', sortable: true },
+  { key: 'insider_score', label: 'Token Score', sortable: true },
+  { key: 'cross_token_score', label: 'Cross-Token', sortable: true },
+  { key: 'combined_insider_score', label: 'Combined', sortable: true },
   { key: 'actions', label: '' },
 ];
 
@@ -57,6 +59,36 @@ function formatRow(wallet: WalletScore, index: number) {
         <span className={styles.insiderValue}>{wallet.insider_score}</span>
       </div>
     ),
+    cross_token_score: (
+      <div className={styles.insiderScoreCell}>
+        {wallet.cross_token_score != null ? (
+          <>
+            <ProgressBar
+              value={wallet.cross_token_score}
+              className={styles.insiderBar}
+            />
+            <span className={styles.insiderValue}>{wallet.cross_token_score}</span>
+          </>
+        ) : (
+          <span className={styles.insiderValue}>--</span>
+        )}
+      </div>
+    ),
+    combined_insider_score: (
+      <div className={styles.insiderScoreCell}>
+        {wallet.combined_insider_score != null ? (
+          <>
+            <ProgressBar
+              value={wallet.combined_insider_score}
+              className={styles.insiderBar}
+            />
+            <span className={styles.combinedValue}>{wallet.combined_insider_score}</span>
+          </>
+        ) : (
+          <span className={styles.insiderValue}>{wallet.insider_score}</span>
+        )}
+      </div>
+    ),
     actions: (
       <Link
         href={`/wallet/${wallet.address}`}
@@ -82,6 +114,8 @@ function formatRow(wallet: WalletScore, index: number) {
     // Store raw values for sorting
     _pnl_percentage: wallet.pnl_percentage,
     _insider_score: wallet.insider_score,
+    _cross_token_score: wallet.cross_token_score ?? 0,
+    _combined_insider_score: wallet.combined_insider_score ?? wallet.insider_score,
     _entry_time: wallet.entry_time,
   };
 }
@@ -89,7 +123,7 @@ function formatRow(wallet: WalletScore, index: number) {
 export const WalletTable: React.FC = () => {
   const wallets = useAnalysisStore((state) => state.wallets);
   const status = useAnalysisStore((state) => state.status);
-  const [sortBy, setSortBy] = useState<string>('_pnl_percentage');
+  const [sortBy, setSortBy] = useState<string>('combined_insider_score');
   const [sortDir, setSortDir] = useState<SortDirection>('desc');
 
   const sortedWallets = useMemo(() => {
@@ -104,6 +138,14 @@ export const WalletTable: React.FC = () => {
         case 'insider_score':
           aVal = a.insider_score;
           bVal = b.insider_score;
+          break;
+        case 'cross_token_score':
+          aVal = a.cross_token_score ?? 0;
+          bVal = b.cross_token_score ?? 0;
+          break;
+        case 'combined_insider_score':
+          aVal = a.combined_insider_score ?? a.insider_score;
+          bVal = b.combined_insider_score ?? b.insider_score;
           break;
         case 'entry_time':
           aVal = new Date(a.entry_time).getTime();

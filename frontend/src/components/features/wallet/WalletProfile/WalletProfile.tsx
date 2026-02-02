@@ -69,7 +69,7 @@ export const WalletProfile: React.FC<WalletProfileProps> = ({ wallet, address })
           <div className={styles.skeletonTag} />
         </div>
         <div className={styles.statsRow}>
-          {Array.from({ length: 7 }).map((_, i) => (
+          {Array.from({ length: 10 }).map((_, i) => (
             <div key={i} className={styles.skeletonStat} />
           ))}
         </div>
@@ -161,10 +161,10 @@ export const WalletProfile: React.FC<WalletProfileProps> = ({ wallet, address })
           </NeonText>
         </div>
 
-        {/* Insider Score */}
+        {/* Insider Score (single-token) */}
         <div className={styles.statCard}>
-          <span className={styles.statLabel}>Insider Score</span>
-          <Tooltip content={`${wallet.insider_score}/100 - higher indicates more insider-like behavior`}>
+          <span className={styles.statLabel}>Token Score</span>
+          <Tooltip content={`${wallet.insider_score}/100 - single-token insider signals`}>
             <NeonText color={getScoreColor(wallet.insider_score)} className={styles.statValue}>
               {wallet.insider_score}
             </NeonText>
@@ -174,6 +174,65 @@ export const WalletProfile: React.FC<WalletProfileProps> = ({ wallet, address })
             color={getScoreColor(wallet.insider_score)}
             className={styles.statBar}
           />
+        </div>
+
+        {/* Cross-Token Score */}
+        <div className={styles.statCard}>
+          <span className={styles.statLabel}>Cross-Token</span>
+          <Tooltip content={`${wallet.cross_token_score ?? '--'}/100 - early entry pattern across ${wallet.tokens_analyzed} tokens`}>
+            <NeonText
+              color={getScoreColor(wallet.cross_token_score ?? 0)}
+              className={styles.statValue}
+            >
+              {wallet.cross_token_score ?? '--'}
+            </NeonText>
+          </Tooltip>
+          {wallet.cross_token_score != null && (
+            <ProgressBar
+              value={wallet.cross_token_score}
+              color={getScoreColor(wallet.cross_token_score)}
+              className={styles.statBar}
+            />
+          )}
+        </div>
+
+        {/* Combined Insider Score */}
+        <div className={styles.statCard}>
+          <span className={styles.statLabel}>Insider Score</span>
+          <Tooltip content={`${wallet.combined_insider_score ?? wallet.insider_score}/100 - combined single + cross-token insider signal`}>
+            <NeonText
+              color={getScoreColor(wallet.combined_insider_score ?? wallet.insider_score)}
+              className={styles.statValue}
+            >
+              {wallet.combined_insider_score ?? wallet.insider_score}
+            </NeonText>
+          </Tooltip>
+          <ProgressBar
+            value={wallet.combined_insider_score ?? wallet.insider_score}
+            color={getScoreColor(wallet.combined_insider_score ?? wallet.insider_score)}
+            className={styles.statBar}
+          />
+        </div>
+
+        {/* Early Token Count / Hit Rate */}
+        <div className={styles.statCard}>
+          <span className={styles.statLabel}>Early Tokens</span>
+          <Tooltip
+            content={
+              wallet.tokens_analyzed > 0
+                ? `${wallet.early_token_count} early entries out of ${wallet.tokens_analyzed} tokens analyzed. Hit rate: ${wallet.early_token_hit_rate ?? 0}%`
+                : 'No cross-token data available'
+            }
+          >
+            <NeonText color="purple" className={styles.statValue}>
+              {wallet.early_token_count}/{wallet.tokens_analyzed}
+            </NeonText>
+          </Tooltip>
+          {wallet.early_token_hit_rate != null && (
+            <span className={styles.statSub}>
+              {formatPercentage(wallet.early_token_hit_rate)} hit rate
+            </span>
+          )}
         </div>
 
         {/* Risk Score */}

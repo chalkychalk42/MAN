@@ -36,6 +36,7 @@ class SentinelAgent(BaseAgent):
         flow_graph: dict[str, Any] = state.get("flow_graph", {})
         token_meta: dict[str, Any] = state.get("token_metadata", {})
         raw_txs: list[dict[str, Any]] = state.get("raw_transactions", [])
+        rate_limiter = state.get("_rate_limiter")
 
         await self.emit_status("initializing", 0, "Aggregating findings")
         await self.emit_message("Compiling risk assessment from all agents")
@@ -115,7 +116,8 @@ class SentinelAgent(BaseAgent):
             await self.emit_status("working", 60, "Generating insights")
 
             ai_insights = await self._generate_insights(
-                token_meta, wallet_scores, risk_factors, risk
+                token_meta, wallet_scores, risk_factors, risk,
+                rate_limiter=rate_limiter,
             )
             state["ai_insights"] = ai_insights
 
@@ -142,6 +144,7 @@ class SentinelAgent(BaseAgent):
         wallet_scores: list[dict[str, Any]],
         risk_factors: dict[str, Any],
         risk_score: float,
+        rate_limiter: Any = None,
     ) -> str:
         """Attempt to generate a natural-language summary via OpenAI.
 
@@ -151,7 +154,8 @@ class SentinelAgent(BaseAgent):
         if settings.openai_api_key:
             try:
                 return await self._ai_summary(
-                    token_meta, wallet_scores, risk_factors, risk_score
+                    token_meta, wallet_scores, risk_factors, risk_score,
+                    rate_limiter=rate_limiter,
                 )
             except Exception:
                 logger.warning("OpenAI call failed -- falling back to rule-based summary")
@@ -164,6 +168,7 @@ class SentinelAgent(BaseAgent):
         wallet_scores: list[dict[str, Any]],
         risk_factors: dict[str, Any],
         risk_score: float,
+        rate_limiter: Any = None,
     ) -> str:
         """Call OpenAI (via langchain-openai) for a natural-language summary."""
         from langchain_openai import ChatOpenAI
@@ -192,6 +197,10 @@ class SentinelAgent(BaseAgent):
         )
 
         await self.emit_message("Generating AI-powered insight summary")
+
+        if rate_limiter:
+            await rate_limiter.acquire_openai()
+
         response = await llm.ainvoke(prompt)
         return response.content
 

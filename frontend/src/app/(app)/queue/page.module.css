@@ -1,0 +1,456 @@
+/* ==========================================================================
+   Queue Management Page
+   ========================================================================== */
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  padding: var(--space-6);
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.header {
+  margin-bottom: var(--space-2);
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+/* --------------------------------------------------------------------------
+   Batch Submit Section
+   -------------------------------------------------------------------------- */
+
+.submitSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.submitLabel {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.textarea {
+  width: 100%;
+  min-height: 200px;
+  padding: var(--space-4);
+  background: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-relaxed);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  resize: vertical;
+  outline: none;
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.textarea::placeholder {
+  color: var(--color-text-muted);
+}
+
+.textarea:focus {
+  border-color: var(--color-cyan);
+  box-shadow:
+    0 0 0 1px rgba(0, 240, 255, 0.2),
+    0 0 12px rgba(0, 240, 255, 0.08);
+}
+
+.submitFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.addressCount {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-sm);
+}
+
+.validCount {
+  color: var(--color-green);
+}
+
+.invalidCount {
+  color: var(--color-pink);
+}
+
+.submitActions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.deployButton {
+  position: relative;
+}
+
+.deployButton::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, rgba(0, 240, 255, 0.3), rgba(0, 240, 255, 0));
+  opacity: 0;
+  z-index: -1;
+  transition: opacity var(--transition-fast);
+  pointer-events: none;
+}
+
+.deployButton:hover::after {
+  opacity: 1;
+}
+
+/* --------------------------------------------------------------------------
+   Queue Dashboard / Stats Grid
+   -------------------------------------------------------------------------- */
+
+.statsHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.statsTitle {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.statsActions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.workerIndicator {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-sm);
+  color: var(--color-green);
+}
+
+.workerDot {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-full);
+  background: var(--color-green);
+  box-shadow: 0 0 6px rgba(0, 255, 136, 0.6);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    box-shadow: 0 0 6px rgba(0, 255, 136, 0.6);
+  }
+  50% {
+    opacity: 0.6;
+    box-shadow: 0 0 12px rgba(0, 255, 136, 0.9);
+  }
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-4);
+}
+
+.statCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  text-align: center;
+}
+
+.statValue {
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-4xl);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-none);
+}
+
+.statLabel {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.statPending .statValue {
+  color: var(--color-yellow);
+  text-shadow: 0 0 12px rgba(255, 225, 77, 0.3);
+}
+
+.statProcessing .statValue {
+  color: var(--color-cyan);
+  text-shadow: 0 0 12px rgba(0, 240, 255, 0.3);
+}
+
+.statComplete .statValue {
+  color: var(--color-green);
+  text-shadow: 0 0 12px rgba(0, 255, 136, 0.3);
+}
+
+.statErrors .statValue {
+  color: var(--color-pink);
+  text-shadow: 0 0 12px rgba(255, 45, 123, 0.3);
+}
+
+/* --------------------------------------------------------------------------
+   Active Batch Section
+   -------------------------------------------------------------------------- */
+
+.batchSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.batchHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.batchTitle {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.batchProgress {
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.progressRow {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.progressLabel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+}
+
+/* --------------------------------------------------------------------------
+   Jobs Table
+   -------------------------------------------------------------------------- */
+
+.jobsTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.jobsTable th {
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  text-align: left;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.jobsTable td {
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-primary);
+  border-bottom: 1px solid rgba(136, 136, 168, 0.04);
+}
+
+.jobRow {
+  transition: background var(--transition-fast);
+}
+
+.jobRow:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.jobRowPending {
+  background: rgba(255, 225, 77, 0.02);
+}
+
+.jobRowProcessing {
+  background: rgba(0, 240, 255, 0.03);
+}
+
+.jobRowComplete {
+  background: rgba(0, 255, 136, 0.02);
+}
+
+.jobRowError {
+  background: rgba(255, 45, 123, 0.03);
+}
+
+.contractAddress {
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+}
+
+.statusBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.statusDot {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-full);
+}
+
+.statusDotPending {
+  background: var(--color-text-muted);
+}
+
+.statusDotProcessing {
+  background: var(--color-cyan);
+  box-shadow: 0 0 6px rgba(0, 240, 255, 0.6);
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.statusDotComplete {
+  background: var(--color-green);
+}
+
+.statusDotError {
+  background: var(--color-pink);
+}
+
+.statusDotCancelled {
+  background: var(--color-text-muted);
+}
+
+.riskScore {
+  font-family: var(--font-family-mono);
+  font-weight: var(--font-weight-semibold);
+}
+
+.riskLow {
+  color: var(--color-green);
+}
+
+.riskMedium {
+  color: var(--color-yellow);
+}
+
+.riskHigh {
+  color: var(--color-orange);
+}
+
+.riskCritical {
+  color: var(--color-pink);
+}
+
+.analysisLink {
+  color: var(--color-cyan);
+  text-decoration: none;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  transition: color var(--transition-fast);
+}
+
+.analysisLink:hover {
+  color: var(--color-text-primary);
+  text-shadow: 0 0 8px rgba(0, 240, 255, 0.4);
+}
+
+.emptyTable {
+  text-align: center;
+  padding: var(--space-8) var(--space-4);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+/* --------------------------------------------------------------------------
+   Responsive
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 1024px) {
+  .statsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .page {
+    padding: var(--space-4);
+    gap: var(--space-6);
+  }
+
+  .title {
+    font-size: 1.5rem;
+  }
+
+  .statsGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .statValue {
+    font-size: var(--font-size-2xl);
+  }
+
+  .submitFooter {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .batchHeader {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .jobsTable {
+    display: block;
+    overflow-x: auto;
+  }
+
+  .jobsTable th,
+  .jobsTable td {
+    padding: var(--space-2) var(--space-3);
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 480px) {
+  .statsGrid {
+    grid-template-columns: 1fr;
+  }
+}

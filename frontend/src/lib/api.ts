@@ -1,6 +1,7 @@
 import type { AnalysisResult, AnalysisSummary, PaginatedResponse, TrendingToken } from '@/types/analysis';
 import type { TokenMetadata } from '@/types/token';
 import type { WalletProfile, WalletConnection, PNLDataPoint, PaginatedTransactions } from '@/types/wallet';
+import type { QueueStatus, BatchStatus, QueueSubmitResponse } from '@/types/queue';
 
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
@@ -146,6 +147,26 @@ export const api = {
 
   getTrending: () =>
     fetcher<TrendingToken[]>('/api/v1/history/trending'),
+
+  // ── Queue ─────────────────────────────────────────────────────────────
+
+  submitBatch: (addresses: string[], priority = 'normal') =>
+    fetcher<QueueSubmitResponse>('/api/v1/queue/submit', {
+      method: 'POST',
+      body: JSON.stringify({ addresses, priority }),
+    }),
+
+  getQueueStatus: () =>
+    fetcher<QueueStatus>('/api/v1/queue/status'),
+
+  getBatchStatus: (batchId: string) =>
+    fetcher<BatchStatus>(`/api/v1/queue/batch/${batchId}`),
+
+  clearQueue: () =>
+    fetcher<{ cleared: number }>('/api/v1/queue/clear', { method: 'DELETE' }),
+
+  cancelJob: (jobId: string) =>
+    fetcher<{ message: string }>(`/api/v1/queue/job/${jobId}`, { method: 'DELETE' }),
 
   // ── Health ────────────────────────────────────────────────────────────
 

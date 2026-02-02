@@ -19,6 +19,11 @@ class WalletScore(BaseModel):
     hold_duration_hours: Optional[float] = None
     insider_score: float = Field(ge=0, le=100)
     risk_score: Optional[float] = Field(default=None, ge=0, le=100)
+    cross_token_score: Optional[float] = Field(default=None, ge=0, le=100)
+    combined_insider_score: Optional[float] = Field(default=None, ge=0, le=100)
+    early_token_count: int = 0
+    early_token_hit_rate: Optional[float] = None
+    tokens_analyzed: int = 0
     label: Optional[str] = None
     tags: list[str] = Field(default_factory=list)
 
@@ -36,6 +41,11 @@ class WalletProfile(BaseModel):
     total_trades: int = 0
     insider_score: Optional[float] = None
     risk_score: Optional[float] = None
+    cross_token_score: Optional[float] = None
+    combined_insider_score: Optional[float] = None
+    early_token_count: int = 0
+    early_token_hit_rate: Optional[float] = None
+    tokens_analyzed: int = 0
     first_seen_at: Optional[datetime] = None
     last_active_at: Optional[datetime] = None
     tags: list[str] = Field(default_factory=list)

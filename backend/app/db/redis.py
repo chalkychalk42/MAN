@@ -15,7 +15,7 @@ async def init_redis() -> aioredis.Redis:
     redis_client = aioredis.from_url(
         settings.redis_url,
         decode_responses=True,
-        max_connections=20,
+        max_connections=50,
     )
     return redis_client
 
